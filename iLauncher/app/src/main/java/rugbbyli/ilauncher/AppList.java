@@ -52,8 +52,6 @@ public class AppList extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
-
     private GridView appGridView;
     private void updateView(){
         appGridView = (GridView)findViewById(R.id.gridViewAppList);
@@ -67,23 +65,16 @@ public class AppList extends Activity {
             @Override
 
             public View getView(int position, View convertView, ViewGroup parent) {
-
                 if(convertView == null){
-
                     convertView = getLayoutInflater().inflate(R.layout.sample_app_item, null);
-
                 }
 
                 ImageView appIcon = (ImageView)convertView.findViewById(R.id.icon);
-
                 appIcon.setImageDrawable(AppHelper.getCurrent().getInstallApps().get(position).icon);
-
                 TextView appName = (TextView)convertView.findViewById(R.id.app_label);
-
                 appName.setText(AppHelper.getCurrent().getInstallApps().get(position).name);
 
                 return convertView;
-
             }
 
         };
@@ -101,6 +92,9 @@ public class AppList extends Activity {
 
                                     long id) {
                 String name = AppHelper.getCurrent().getInstallApps().get(pos).id.toString();
+
+                if(catchItemClick(name)) return;
+
                 Intent i = getPackageManager().getLaunchIntentForPackage(name);
 
                 AppList.this.startActivity(i);
@@ -108,6 +102,17 @@ public class AppList extends Activity {
             }
 
         });
+
+    }
+
+    private boolean catchItemClick(String id){
+        if(id.equals(Constants.id_new_folder)){
+            return true;
+        }
+        return false;
+    }
+
+    private void showNewFolderPop(){
 
     }
 

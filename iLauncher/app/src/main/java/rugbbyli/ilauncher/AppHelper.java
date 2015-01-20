@@ -5,6 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.BitmapDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +20,7 @@ public class AppHelper {
     private Context context;
     private PackageManager manager;
     private List<AppDetail> installApps;
+
     private void getAppList(){
         installApps = new ArrayList<AppDetail>();
 
@@ -47,6 +52,13 @@ public class AppHelper {
 
             installApps.add(app);
         }
+        AppDetail add = new AppDetail();
+        add.name = "新建文件夹";
+        add.id = Constants.id_new_folder;
+        add.icon = context.getResources().getDrawable(R.drawable.add);
+        add.icon.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.ADD);
+
+        installApps.add(add);
     }
 
     private List<CharSequence> getLauncherApp(){

@@ -9,18 +9,18 @@
         android:launchMode="singleInstance"
         android:theme="@android:style/Theme.Wallpaper.NoTitleBar" >
         <activity
-            android:name="rugbbyli.ilauncher.Home"
+            android:name=".Home"
             android:label="@string/title_activity_home" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.HOME" />
 
+                <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="rugbbyli.ilauncher.AppList"
+            android:name=".AppList"
             android:label="@string/title_activity_app_list" >
         </activity>
     </application>
