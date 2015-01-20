@@ -19,7 +19,7 @@
         android:numColumns="4"
         android:gravity="center"
         android:choiceMode="singleChoice"
-        android:verticalSpacing="30dp"
+        android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"

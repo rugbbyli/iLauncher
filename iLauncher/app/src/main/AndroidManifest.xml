@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:launchMode="singleTask"
+        android:launchMode="singleInstance"
         android:theme="@android:style/Theme.Wallpaper.NoTitleBar" >
         <activity
             android:name="rugbbyli.ilauncher.Home"

@@ -19,22 +19,47 @@ public class AppHelper {
     private void getAppList(){
         installApps = new ArrayList<AppDetail>();
 
+        List<CharSequence> launchers = getLauncherApp();
+
         Intent i = new Intent(Intent.ACTION_MAIN, null);
 
         i.addCategory(Intent.CATEGORY_LAUNCHER);
 
         List<ResolveInfo> availableActivities = manager.queryIntentActivities(i, 0);
 
-        for(ResolveInfo ri:availableActivities){
+        for(ResolveInfo info:availableActivities){
+            CharSequence id = info.activityInfo.packageName;
+
+            boolean pass = false;
+            for(CharSequence ri:launchers){
+                if(ri.equals(id)){
+                    pass = true;
+                    break;
+                }
+            }
+            if (pass) continue;
 
             AppDetail app = new AppDetail();
 
-            app.name = ri.activityInfo.loadLabel(manager);
-            app.id = ri.activityInfo.packageName;
-            app.icon = ri.activityInfo.loadIcon(manager);
+            app.name = info.activityInfo.loadLabel(manager);
+            app.id = id;
+            app.icon = info.activityInfo.loadIcon(manager);
 
             installApps.add(app);
         }
+    }
+
+    private List<CharSequence> getLauncherApp(){
+        Intent i = new Intent(Intent.ACTION_MAIN, null);
+        i.addCategory(Intent.CATEGORY_HOME);
+        List<ResolveInfo> ret = manager.queryIntentActivities(i, 0);
+
+        List<CharSequence> launcher = new ArrayList<CharSequence>(ret.size());
+        for(ResolveInfo info:ret){
+            launcher.add(info.activityInfo.packageName);
+        }
+
+        return launcher;
     }
 
     public AppHelper(Context context)
