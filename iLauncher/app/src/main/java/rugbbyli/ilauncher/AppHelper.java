@@ -11,6 +11,8 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -52,6 +54,9 @@ public class AppHelper {
 
             installApps.add(app);
         }
+
+        Collections.sort(installApps);
+
         AppDetail add = new AppDetail();
         add.name = "新建文件夹";
         add.id = Constants.id_new_folder;
