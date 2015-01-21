@@ -7,9 +7,11 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/editText_name"
-        android:layout_gravity="top" />
+        android:layout_gravity="top"
+        android:focusableInTouchMode="true"
+        android:text="新建文件夹" />
 
     <ImageButton
         android:layout_width="50dp"
@@ -18,7 +20,8 @@
         android:layout_gravity="right|top"
         android:scaleType="centerCrop"
         android:background="@drawable/ok"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:onClick="newFolderPop_buttonOk_Click" />
 
     <ImageButton
         android:layout_width="50dp"
@@ -27,5 +30,6 @@
         android:layout_gravity="right|top"
         android:scaleType="centerCrop"
         android:layout_marginRight="70dp"
-        android:background="@drawable/cancel" />
+        android:background="@drawable/cancel"
+        android:onClick="newFolderPop_buttonCancel_Click" />
 </FrameLayout>

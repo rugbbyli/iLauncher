@@ -1,25 +1,31 @@
 package rugbbyli.ilauncher;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class AppList extends Activity {
+public class AppList extends Activity implements NewFolderFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,16 +113,64 @@ public class AppList extends Activity {
 
     private boolean catchItemClick(String id){
         if(id.equals(Constants.id_new_folder)){
+            showNewFolderPop();
+            return true;
+        }
+        if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE){
             return true;
         }
         return false;
     }
 
+    Fragment newFolderFragment;
     private void showNewFolderPop(){
+        newFolderFragment = new NewFolderFragment();
+        getFragmentManager().beginTransaction().add(R.id.applist_layout, newFolderFragment).commit();
 
+        FrameLayout.LayoutParams parms = (FrameLayout.LayoutParams)appGridView.getLayoutParams();
+        parms.setMargins(0,dip2px(70),0,0);
+        appGridView.setLayoutParams(parms);
+
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+    }
+
+    private void hideNewFolderPop(){
+        getFragmentManager().beginTransaction().remove(newFolderFragment).commit();
+
+        FrameLayout.LayoutParams parms = (FrameLayout.LayoutParams)appGridView.getLayoutParams();
+        parms.setMargins(0,0,0,0);
+        appGridView.setLayoutParams(parms);
+
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+    }
+
+    private int dip2px(float dpValue) {
+        final float scale = getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    public void newFolderPop_buttonCancel_Click(View v){
+        hideNewFolderPop();
+    }
+
+    public void newFolderPop_buttonOk_Click(View v){
+
+        EditText text = (EditText)findViewById(R.id.editText_name);
+        String name = text.getText().toString();
+
+        if(name.isEmpty() || name.trim().isEmpty()){
+            return;
+        }
+
+        hideNewFolderPop();
     }
 
     public void closeAppList(View v){
         this.finish();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
