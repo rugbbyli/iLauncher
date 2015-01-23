@@ -80,6 +80,8 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
                 TextView appName = (TextView)convertView.findViewById(R.id.app_label);
                 appName.setText(AppHelper.getCurrent().getInstallApps().get(position).name);
 
+                //if(appGridView.getSelectedItemPosition())
+
                 return convertView;
             }
 
@@ -116,7 +118,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
             showNewFolderPop();
             return true;
         }
-        if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE){
+        if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE_MODAL){
             return true;
         }
         return false;
@@ -131,7 +133,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
         parms.setMargins(0,dip2px(70),0,0);
         appGridView.setLayoutParams(parms);
 
-        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
     }
 
     private void hideNewFolderPop(){
@@ -141,7 +143,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
         parms.setMargins(0,0,0,0);
         appGridView.setLayoutParams(parms);
 
-        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
     }
 
     private int dip2px(float dpValue) {
@@ -161,6 +163,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
         if(name.isEmpty() || name.trim().isEmpty()){
             return;
         }
+
 
         hideNewFolderPop();
     }

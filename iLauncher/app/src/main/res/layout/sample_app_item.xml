@@ -10,7 +10,8 @@
         android:src="@drawable/home"
         android:layout_height="@android:dimen/app_icon_size"
         android:layout_centerHorizontal="true"
-        android:scaleType="centerInside">
+        android:scaleType="centerInside"
+        android:layout_marginTop="10dp">
     </ImageView>
     <TextView android:id="@+id/app_label"
         android:layout_below="@+id/icon"
@@ -20,6 +21,9 @@
         android:text="demodemodemo"
         android:gravity="center_horizontal"
         android:maxLines="2"
-        android:textAlignment="inherit">
+        android:textAlignment="inherit"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp">
     </TextView>
 </RelativeLayout>
