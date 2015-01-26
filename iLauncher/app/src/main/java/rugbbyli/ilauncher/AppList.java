@@ -75,6 +75,15 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
                     convertView = getLayoutInflater().inflate(R.layout.sample_app_item, null);
                 }
 
+                if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE){
+                    if(appGridView.isItemChecked(position)){
+                        convertView.setBackgroundResource(R.drawable.item_select);
+                    }
+                    else{
+                        convertView.setBackgroundResource(0);
+                    }
+                }
+
                 ImageView appIcon = (ImageView)convertView.findViewById(R.id.icon);
                 appIcon.setImageDrawable(AppHelper.getCurrent().getInstallApps().get(position).icon);
                 TextView appName = (TextView)convertView.findViewById(R.id.app_label);
@@ -101,12 +110,16 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
                                     long id) {
                 String name = AppHelper.getCurrent().getInstallApps().get(pos).id.toString();
 
+
                 if(catchItemClick(name)) return;
 
                 Intent i = getPackageManager().getLaunchIntentForPackage(name);
 
-                AppList.this.startActivity(i);
+                boolean isChecked = appGridView.isItemChecked(pos);
 
+                appGridView.clearChoices();
+
+                AppList.this.startActivity(i);
             }
 
         });
@@ -118,7 +131,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
             showNewFolderPop();
             return true;
         }
-        if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE_MODAL){
+        if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE){
             return true;
         }
         return false;
@@ -133,7 +146,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
         parms.setMargins(0,dip2px(70),0,0);
         appGridView.setLayoutParams(parms);
 
-        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
     }
 
     private void hideNewFolderPop(){
@@ -143,7 +156,8 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
         parms.setMargins(0,0,0,0);
         appGridView.setLayoutParams(parms);
 
-        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        appGridView.clearChoices();
     }
 
     private int dip2px(float dpValue) {

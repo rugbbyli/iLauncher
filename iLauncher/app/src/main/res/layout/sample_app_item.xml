@@ -4,7 +4,8 @@
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:textAlignment="center"
-    android:gravity="top">
+    android:gravity="top"
+    >
     <ImageView android:id="@+id/icon"
         android:layout_width="@android:dimen/app_icon_size"
         android:src="@drawable/home"

@@ -18,7 +18,7 @@
         android:background="#00ffffff"
         android:numColumns="4"
         android:gravity="bottom"
-        android:choiceMode="none"
+        android:choiceMode="singleChoice"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:layout_centerHorizontal="true"
@@ -31,8 +31,7 @@
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:layout_gravity="bottom"
-        android:listSelector="#003ba5ff" />
+        android:layout_gravity="bottom" />
 
     <ImageButton
         android:layout_width="50dp"
