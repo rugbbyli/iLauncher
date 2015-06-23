@@ -25,6 +25,8 @@
         android:textAlignment="inherit"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold">
     </TextView>
 </RelativeLayout>

@@ -3,7 +3,7 @@
     android:layout_height="fill_parent" android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
-    android:paddingBottom="0dp" tools:context="rugbbyli.ilauncher.Home"
+    android:paddingBottom="0dp" tools:context="rugbbyli.ilauncher.HomeActivity"
     android:background="@android:color/transparent"
     android:padding="10dp">
 

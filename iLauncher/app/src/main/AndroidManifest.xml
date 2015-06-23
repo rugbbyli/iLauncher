@@ -9,7 +9,8 @@
         android:launchMode="singleInstance"
         android:theme="@android:style/Theme.Wallpaper.NoTitleBar" >
         <activity
-            android:name=".Home"
+            android:name=".HomeActivity"
+            android:launchMode="singleInstance"
             android:label="@string/title_activity_home" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AppList"
+            android:name=".AppListActivity"
+            android:launchMode="singleInstance"
             android:label="@string/title_activity_app_list" >
         </activity>
     </application>

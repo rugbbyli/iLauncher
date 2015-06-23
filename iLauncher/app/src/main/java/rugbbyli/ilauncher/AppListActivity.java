@@ -3,14 +3,14 @@ package rugbbyli.ilauncher;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -18,23 +18,46 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
 
+public class AppListActivity extends Activity implements NewFolderFragment.OnFragmentInteractionListener {
 
-public class AppList extends Activity implements NewFolderFragment.OnFragmentInteractionListener {
+    public static boolean hasCreated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
+        //在虚拟按键上显示menu键
+        try {
+            getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
+        }
+        catch (NoSuchFieldException e) {
+
+        }
+        catch (IllegalAccessException e) {
+
+        }
         updateView();
         addClickListener();
+
+        hasCreated = true;
     }
 
+    @Override
+    protected void onDestroy() {
+        hasCreated = false;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            closeAppList(null);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -46,7 +69,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the HomeActivity/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
@@ -119,7 +142,7 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
 
                 appGridView.clearChoices();
 
-                AppList.this.startActivity(i);
+                AppListActivity.this.startActivity(i);
             }
 
         });
@@ -183,7 +206,9 @@ public class AppList extends Activity implements NewFolderFragment.OnFragmentInt
     }
 
     public void closeAppList(View v){
-        this.finish();
+        Intent i = new Intent(this, HomeActivity.class);
+
+        startActivity(i);
     }
 
     @Override
