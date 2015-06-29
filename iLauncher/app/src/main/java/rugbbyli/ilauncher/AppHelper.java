@@ -1,19 +1,21 @@
 package rugbbyli.ilauncher;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+
+import rugbbyli.ilauncher.sql.AppListDAO;
 
 /**
  * Created by yangg on 2015/1/18.
@@ -21,57 +23,71 @@ import java.util.List;
 public class AppHelper {
     private Context context;
     private PackageManager manager;
-    private List<AppDetail> installApps;
+    private List<AppListItem> installApps;
 
     private void getAppList(){
-        installApps = new ArrayList<AppDetail>();
+        installApps = new ArrayList<>();
 
-        List<CharSequence> launchers = getLauncherApp();
 
-        Intent i = new Intent(Intent.ACTION_MAIN, null);
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
 
-        i.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
 
-        List<ResolveInfo> availableActivities = manager.queryIntentActivities(i, 0);
+        List<ResolveInfo> availableActivities = manager.queryIntentActivities(intent, 0);
+
+        List<String> launchers = getLauncherApp();
+        HashMap<String, String> folderApps = AppListDAO.GetAllFolderApps();
+        List<String> folders = AppListDAO.GetAllFolders();
+
+        List<FolderItem> folderItems = new ArrayList<>(folders.size());
+
+        Drawable folderIcon = context.getResources().getDrawable(R.drawable.add);
+        for(int i = 0;i<folders.size();i++){
+            folderItems.add(new FolderItem(folders.get(i), folderIcon));
+        }
 
         for(ResolveInfo info:availableActivities){
-            CharSequence id = info.activityInfo.packageName;
+            String id = info.activityInfo.packageName;
 
-            boolean pass = false;
-            for(CharSequence ri:launchers){
-                if(ri.equals(id)){
-                    pass = true;
-                    break;
+            if(launchers.contains(id)) continue;
+
+            AppItem app = new AppItem(id, info.activityInfo.loadLabel(manager), info.activityInfo.loadIcon(manager));
+
+            //对于文件夹内的app
+            if(folderApps.containsKey(id)){
+                String folderName = folderApps.get(id);
+                if(folders.contains(folderName)){
+                    folderItems.get(folders.indexOf(folderName)).getItems().add(app);
+                }
+                else {
+                    FolderItem item = new FolderItem(folderName, folderIcon);
+                    item.getItems().add(app);
+                    folderItems.add(item);
                 }
             }
-            if (pass) continue;
+            else{
+                installApps.add(app);
+            }
 
-            AppDetail app = new AppDetail();
 
-            app.name = info.activityInfo.loadLabel(manager);
-            app.id = id;
-            app.icon = info.activityInfo.loadIcon(manager);
 
-            installApps.add(app);
         }
 
         Collections.sort(installApps);
 
-        AppDetail add = new AppDetail();
-        add.name = "新建文件夹";
-        add.id = Constants.id_new_folder;
-        add.icon = context.getResources().getDrawable(R.drawable.add);
+        AppItem add = new AppItem(Constants.id_new_folder, "新建文件夹", context.getResources().getDrawable(R.drawable.add));
+
         add.icon.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.ADD);
 
         installApps.add(add);
     }
 
-    private List<CharSequence> getLauncherApp(){
+    private List<String> getLauncherApp(){
         Intent i = new Intent(Intent.ACTION_MAIN, null);
         i.addCategory(Intent.CATEGORY_HOME);
         List<ResolveInfo> ret = manager.queryIntentActivities(i, 0);
 
-        List<CharSequence> launcher = new ArrayList<CharSequence>(ret.size());
+        List<String> launcher = new ArrayList<>(ret.size());
         for(ResolveInfo info:ret){
             launcher.add(info.activityInfo.packageName);
         }
@@ -87,7 +103,7 @@ public class AppHelper {
         getAppList();
     }
 
-    public List<AppDetail> getInstallApps(){
+    public List<AppListItem> getInstallApps(){
         return installApps;
     }
 

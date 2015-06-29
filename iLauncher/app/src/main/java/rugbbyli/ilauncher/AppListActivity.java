@@ -29,7 +29,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
-        //在虚拟按键上显示menu键
+        //鍦ㄨ櫄鎷熸寜閿笂鏄剧ずmenu閿?
         try {
             getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
         }
@@ -85,7 +85,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
     private void updateView(){
         appGridView = (GridView)findViewById(R.id.gridViewAppList);
 
-        ArrayAdapter<AppDetail> adapter = new ArrayAdapter<AppDetail>(this,
+        ArrayAdapter<AppListItem> adapter = new ArrayAdapter<AppListItem>(this,
 
                 R.layout.sample_app_item,
 
@@ -131,18 +131,24 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
             public void onItemClick(AdapterView<?> av, View v, int pos,
 
                                     long id) {
-                String name = AppHelper.getCurrent().getInstallApps().get(pos).id.toString();
+                AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
+                if(item.type == AppListItemType.App) {
+                    String name = ((AppItem)(item)).id.toString();
 
-                if(catchItemClick(name)) return;
+                    if (catchItemClick(name)) return;
 
-                Intent i = getPackageManager().getLaunchIntentForPackage(name);
+                    Intent i = getPackageManager().getLaunchIntentForPackage(name);
 
-                boolean isChecked = appGridView.isItemChecked(pos);
+                    boolean isChecked = appGridView.isItemChecked(pos);
 
-                appGridView.clearChoices();
+                    appGridView.clearChoices();
 
-                AppListActivity.this.startActivity(i);
+                    AppListActivity.this.startActivity(i);
+                }
+                else {
+
+                }
             }
 
         });
