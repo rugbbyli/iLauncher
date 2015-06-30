@@ -17,11 +17,11 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String appListDics = "AppListDics";
-        String sql = String.format("create table %s(dic varchar(64) primary key", appListDics);
+        String sql = String.format("create table %s(dic varchar(64) primary key)", appListDics);
         db.execSQL(sql);
 
         String appListDicApps = "AppListDicApps";
-        sql = String.format("create table %s(appid varchar(128) primary key,dic varchar(64)", appListDicApps);
+        sql = String.format("create table %s(appid varchar(128) primary key,dic varchar(64))", appListDicApps);
         db.execSQL(sql);
     }
 
