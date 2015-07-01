@@ -11,7 +11,7 @@ import java.util.Locale;
  */
 public class AppItem extends AppListItem {
 
-    CharSequence id;
+    public CharSequence id;
 
     public AppItem(CharSequence id, CharSequence name, Drawable icon){
         super(name, icon);

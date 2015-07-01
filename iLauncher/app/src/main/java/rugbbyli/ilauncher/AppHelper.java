@@ -44,7 +44,6 @@ public class AppHelper {
     private void getAppList(){
         installApps = new ArrayList<>();
 
-
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
 
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -57,9 +56,8 @@ public class AppHelper {
 
         List<FolderItem> folderItems = new ArrayList<>(folders.size());
 
-        Drawable folderIcon = context.getResources().getDrawable(R.drawable.add);
         for(int i = 0;i<folders.size();i++){
-            folderItems.add(new FolderItem(folders.get(i), folderIcon));
+            folderItems.add(new FolderItem(folders.get(i), null));
         }
 
         for(ResolveInfo info:availableActivities){
@@ -72,11 +70,13 @@ public class AppHelper {
             //对于文件夹内的app
             if(folderApps.containsKey(id)){
                 String folderName = folderApps.get(id);
+                //存在文件夹
                 if(folders.contains(folderName)){
                     folderItems.get(folders.indexOf(folderName)).getItems().add(app);
                 }
+                //不存在文件夹
                 else {
-                    FolderItem item = new FolderItem(folderName, folderIcon);
+                    FolderItem item = new FolderItem(folderName, null);
                     item.getItems().add(app);
                     folderItems.add(item);
                 }
@@ -84,28 +84,31 @@ public class AppHelper {
             else{
                 installApps.add(app);
             }
-
-
-
         }
 
         Collections.sort(installApps);
 
         AppItem add = new AppItem(Constants.id_new_folder, "新建文件夹", context.getResources().getDrawable(R.drawable.add));
 
-        add.icon.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.ADD);
+        //add.icon.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.ADD);
 
         installApps.add(add);
 
-        boolean open = false;
-        List<AppListItem> testitems = new ArrayList<>();
-        for(int i = 0;i<12;i++) {
-            testitems.add(installApps.get(i));
-            Drawable d1 = getFolderIcon2(open, testitems);
-            FolderItem item = new FolderItem("文件夹" + (i+1), d1);
-            installApps.add(item);
-            open = !open;
+        //在列表顶部排序并插入文件夹
+        Collections.sort(folderItems);
+        for(int i = 0;i<folderItems.size();i++){
+            installApps.add(i, setFolderIcon(folderItems.get(i)));
         }
+
+//        boolean open = false;
+//        List<AppListItem> testitems = new ArrayList<>();
+//        for(int i = 0;i<12;i++) {
+//            testitems.add(installApps.get(i));
+//            Drawable d1 = getFolderIcon(open, testitems);
+//            FolderItem item = new FolderItem("文件夹" + (i+1), d1);
+//            installApps.add(item);
+//            open = !open;
+//        }
     }
 
     private List<String> getLauncherApp(){
@@ -214,25 +217,48 @@ public class AppHelper {
         }
     }
 
+    public Drawable getFolderIcon(boolean isOpen, List<AppListItem> children){
 
-    public Drawable getFolderIcon(List<AppListItem> children){
+        BitmapDrawable bg = (BitmapDrawable)context.getResources().getDrawable(isOpen ? R.drawable.folder_open : R.drawable.folder_close);
+
+        if(children == null || children.size() == 0)
+            return bg;
+
         int count = children.size();
         if(count > 9) count = 9;
 
-        int padding = 40;
-        int width = 144*3 + padding*2;
+        int padding = 20;
+        int width = 200;
         int cols = (int)Math.ceil(Math.sqrt(count));
-        int size = (width - padding*2) / cols;
+        int margin = 20 / cols;
+        int rowWidth = (width - padding*2) / cols;
+        int size = rowWidth - 2*margin;
 
-        Drawable[] icons = new Drawable[count + 1];
-        icons[0] = context.getResources().getDrawable(R.drawable.folder_close);
-        icons[0].setBounds(0, 0, width, width);
+        Bitmap bmp = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmp);
+
+        bg.setBounds(0, 0, bg.getIntrinsicWidth(), bg.getIntrinsicHeight());
+
+        if(isOpen){
+            canvas.drawBitmap(bg.getBitmap(), bg.getBounds(), new Rect(0, 0, width, width), null);
+        }
 
         for(int i = 0;i<count;i++){
             BitmapDrawable bd = (BitmapDrawable)children.get(i).icon;
-            icons[i + 1] = bd;
+
+            int row = i / cols;
+            int col = i % cols;
+            int left = col * rowWidth + margin + padding;
+            int top = row * rowWidth + margin + padding;
+            //int right = width - left - size;
+            //int bottom = width - top - size;
             bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
-            //bd.setGravity(Gravity.LEFT);
+
+            canvas.drawBitmap(bd.getBitmap(), bd.getBounds(), new Rect(left, top, left + size, top + size), null);
+        }
+
+        if(!isOpen){
+            canvas.drawBitmap(bg.getBitmap(), bg.getBounds(), new Rect(0, 0, width, width), null);
         }
 
 //        LayerDrawable layer = new LayerDrawable(icons);
@@ -254,8 +280,7 @@ public class AppHelper {
 //
 //        return  layer;
 
-        Bitmap bmp = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bmp);
+
 
 //        Paint paint = new Paint();
 //        paint.setColor(Color.WHITE);
@@ -264,21 +289,28 @@ public class AppHelper {
 //        canvas.drawRoundRect(0, 0, width, width, 100, 100, paint);
         //canvas.drawBitmap(((NinePatchDrawable)(icons[0]))., icons[0].getBounds(), new Rect(0, 0, width, width), null);
 
-        for(int i = 0;i<count;i++){
-            int row = i / cols;
-            int col = i % cols;
-            int left = col * size + padding;
-            int top = row * size + padding;
-            int right = width - left - size;
-            int bottom = width - top - size;
-
-            canvas.drawBitmap(((BitmapDrawable)(icons[i+1])).getBitmap(), icons[i+1].getBounds(), new Rect(left, top, left + size, top + size), null);
-        }
-
-        icons[0].draw(canvas);
+//        for(int i = 0;i<count;i++){
+//            int row = i / cols;
+//            int col = i % cols;
+//            int left = col * size + padding;
+//            int top = row * size + padding;
+//            int right = width - left - size;
+//            int bottom = width - top - size;
+//
+//            canvas.drawBitmap(((BitmapDrawable)(icons[i+1])).getBitmap(), icons[i+1].getBounds(), new Rect(left, top, left + size, top + size), null);
+//        }
+//
+//        icons[0].draw(canvas);
 
         canvas.save(Canvas.ALL_SAVE_FLAG);
+        canvas.restore();
+
         return new BitmapDrawable(bmp);
+    }
+
+    public FolderItem setFolderIcon(FolderItem item){
+        item.icon = getFolderIcon(item.isOpen, item.getItems());
+        return item;
     }
 
     private int dip2px(float dpValue) {

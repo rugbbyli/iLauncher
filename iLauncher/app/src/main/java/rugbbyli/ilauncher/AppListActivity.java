@@ -20,6 +20,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import rugbbyli.ilauncher.sql.AppListDAO;
+
 
 public class AppListActivity extends Activity implements NewFolderFragment.OnFragmentInteractionListener {
 
@@ -201,11 +203,14 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
     public void newFolderPop_buttonOk_Click(View v){
 
         EditText text = (EditText)findViewById(R.id.editText_name);
-        String name = text.getText().toString();
+        String name = text.getText().toString().trim();
 
-        if(name.isEmpty() || name.trim().isEmpty()){
+        if(name.isEmpty()){
             return;
         }
+
+        if(AppListDAO.ContainsFolder(name)) return;
+
 
 
         hideNewFolderPop();

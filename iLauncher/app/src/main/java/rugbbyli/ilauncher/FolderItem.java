@@ -12,6 +12,8 @@ public class FolderItem extends AppListItem {
 
     private List<AppListItem> items;
 
+    public boolean isOpen = false;
+
     public FolderItem(CharSequence name, Drawable icon){
         super(name, icon);
         type = AppListItemType.Folder;

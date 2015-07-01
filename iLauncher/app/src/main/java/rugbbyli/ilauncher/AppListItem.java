@@ -9,9 +9,9 @@ import java.util.Locale;
  * Created by zxq on 2015/6/29.
  */
 public class AppListItem implements Comparable<AppListItem> {
-    CharSequence name;
-    Drawable icon;
-    AppListItemType type;
+    public CharSequence name;
+    public Drawable icon;
+    public AppListItemType type;
 
     public AppListItem(CharSequence name, Drawable icon){
         this.name = name;

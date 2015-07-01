@@ -2,7 +2,6 @@ package rugbbyli.ilauncher.sql;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -16,12 +15,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String appListDics = "AppListDics";
-        String sql = String.format("create table %s(dic varchar(64) primary key)", appListDics);
+        String sql = String.format("create table %s(%s varchar(64) primary key)", DBConfig.Table_Folder, DBConfig.Key_Folder);
         db.execSQL(sql);
 
-        String appListDicApps = "AppListDicApps";
-        sql = String.format("create table %s(appid varchar(128) primary key,dic varchar(64))", appListDicApps);
+        sql = String.format("create table %s(%s varchar(128) primary key,%s varchar(64))", DBConfig.Table_FolderApp, DBConfig.Key_Appid, DBConfig.Key_Folder);
         db.execSQL(sql);
     }
 
