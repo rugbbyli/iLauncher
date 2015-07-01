@@ -130,9 +130,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
             @Override
 
-            public void onItemClick(AdapterView<?> av, View v, int pos,
-
-                                    long id) {
+            public void onItemClick(AdapterView<?> av, View v, int pos, long id) {
                 AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
                 if(item.type == AppListItemType.App) {
