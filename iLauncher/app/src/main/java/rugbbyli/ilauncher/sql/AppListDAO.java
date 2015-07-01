@@ -17,7 +17,14 @@ import rugbbyli.ilauncher.*;
  */
 public class AppListDAO {
     public static void AddFolder(FolderItem item){
+        SafeDBOperate(new DBOperator(){
+            @Override
+            public Object Operate(SQLiteDatabase db){
+                final boolean ret = false;
 
+                return ret;
+            }
+        });
     }
 
 
@@ -26,7 +33,7 @@ public class AppListDAO {
         return (List<String>)SafeDBOperate(new DBOperator() {
             @Override
             public Object Operate(SQLiteDatabase db) {
-                final List<String> list = null;
+                final List<String> list = new ArrayList<>();
                 Cursor cursor = db.rawQuery("select * from AppListDics", null);
                 while (cursor.moveToNext()) {
                     list.add(cursor.getString(0));
