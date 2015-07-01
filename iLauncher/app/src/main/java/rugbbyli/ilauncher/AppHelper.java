@@ -313,7 +313,7 @@ public class AppHelper {
         return item;
     }
 
-    private int dip2px(float dpValue) {
+    public int dip2px(float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }

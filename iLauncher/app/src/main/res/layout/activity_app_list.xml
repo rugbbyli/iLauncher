@@ -10,17 +10,17 @@
     android:id="@+id/applist_layout">
 
     <GridView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/gridViewAppList"
         android:layout_alignParentLeft="false"
         android:layout_alignParentRight="false"
-        android:background="#00ffffff"
+        android:background="@android:color/transparent"
         android:numColumns="4"
         android:gravity="bottom"
         android:choiceMode="singleChoice"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
+        android:verticalSpacing="5dip"
+        android:horizontalSpacing="0dp"
         android:layout_centerHorizontal="true"
         android:stretchMode="columnWidth"
         android:scrollbars="none"
@@ -31,7 +31,8 @@
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+        android:listSelector="@drawable/app_list_selector" />
 
     <ImageButton
         android:layout_width="50dp"

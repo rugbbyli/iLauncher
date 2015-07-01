@@ -102,10 +102,10 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
                 if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE){
                     if(appGridView.isItemChecked(position)){
-                        convertView.setBackgroundResource(R.drawable.item_select);
+                        //convertView.setBackgroundResource(R.drawable.item_select);
                     }
                     else{
-                        convertView.setBackgroundResource(0);
+                        //convertView.setBackgroundResource(0);
                     }
                 }
 
@@ -174,10 +174,11 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         getFragmentManager().beginTransaction().add(R.id.applist_layout, newFolderFragment).commit();
 
         FrameLayout.LayoutParams parms = (FrameLayout.LayoutParams)appGridView.getLayoutParams();
-        parms.setMargins(0,dip2px(70),0,0);
+        parms.setMargins(0, AppHelper.getCurrent().dip2px(70), 0, 0);
         appGridView.setLayoutParams(parms);
 
         appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+
     }
 
     private void hideNewFolderPop(){
@@ -189,11 +190,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
         appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         appGridView.clearChoices();
-    }
 
-    private int dip2px(float dpValue) {
-        final float scale = getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
     }
 
     public void newFolderPop_buttonCancel_Click(View v){

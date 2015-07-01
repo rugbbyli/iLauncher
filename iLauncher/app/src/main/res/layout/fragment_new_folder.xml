@@ -12,14 +12,16 @@
         android:layout_gravity="top"
         android:focusableInTouchMode="true"
         android:text="新建文件夹"
-        android:background="@drawable/crop_to_desktop_selected"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="0dp"
         android:lines="1"
         android:paddingLeft="10dp"
         android:textSize="24dp"
         android:textStyle="bold"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:paddingRight="0dp" />
 
     <ImageButton
         android:layout_width="50dp"

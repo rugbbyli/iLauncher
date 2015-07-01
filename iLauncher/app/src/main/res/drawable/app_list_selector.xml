@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <shape>
+            <!-- 设置背景填充色为黑色 -->
+            <solid android:color="#df000000"/>
+            <!-- 设置边框宽度为1dp，边框颜色为白色 -->
+            <!--<stroke android:width="4dp" android:color="#ff000000" />-->
+            <!-- 设置按钮圆角半径为5dp -->
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+
+    <!-- 没有焦点时的背景图片 -->
+    <item android:state_window_focused="false" android:drawable="@drawable/blank" />
+    <!-- 非触摸模式下获得焦点并单击时的背景图片 -->
+    <item android:state_focused="true" android:state_pressed="true" >
+        <shape>
+            <!-- 设置背景填充色为黑色 -->
+            <solid android:color="#0f000000"/>
+            <!-- 设置边框宽度为1dp，边框颜色为白色 -->
+            <stroke android:width="2dp" android:color="#ff000000" />
+            <!-- 设置按钮圆角半径为5dp -->
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <!-- 触摸模式下单击时的背景图片-->
+    <item android:state_focused="false" android:state_pressed="true">
+        <shape>
+            <!-- 设置背景填充色为黑色 -->
+            <solid android:color="#2f000000"/>
+            <!-- 设置边框宽度为1dp，边框颜色为白色 -->
+            <stroke android:width="2dp" android:color="#ff000000" />
+            <!-- 设置按钮圆角半径为5dp -->
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+    <!--选中时的图片背景-->
+    <!--<item android:state_selected="true" android:drawable="@drawable/add" android:layout_width="match_parent" android:layout_height="match_parent"/>-->
+
+    <!--获得焦点时的图片背景-->
+    <item android:state_focused="true"  android:drawable="@drawable/blank" />
+    <!-- 默认时的背景图片-->
+    <item android:drawable="@drawable/blank" />
+</selector>
