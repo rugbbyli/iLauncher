@@ -29,7 +29,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
-        //在虚拟按键上显示menu�?
+        //在虚拟按键上显示menu
         try {
             getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
         }

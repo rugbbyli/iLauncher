@@ -5,14 +5,12 @@ import android.app.Application;
 import rugbbyli.ilauncher.sql.DBOpenHelper;
 
 /**
- * Created by zxq on 2015/6/30.
+ * Created by yangg on 2015/6/30.
  */
 public class App extends Application {
     @Override
-    public void onCreate()
-    {
+    public void onCreate() {
         super.onCreate();
-
         DBOpenHelper.Init(this);
     }
 }

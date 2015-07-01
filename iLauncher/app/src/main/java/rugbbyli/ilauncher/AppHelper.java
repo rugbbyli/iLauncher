@@ -7,12 +7,18 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+
+import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.os.Debug;
+import android.graphics.drawable.NinePatchDrawable;
+import android.provider.CalendarContract;
 import android.util.Log;
+import android.view.Gravity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -208,44 +214,71 @@ public class AppHelper {
         }
     }
 
-    public Drawable getFolderIcon(boolean isOpen, List<AppListItem> children){
+
+    public Drawable getFolderIcon(List<AppListItem> children){
         int count = children.size();
         if(count > 9) count = 9;
 
-        int width = dip2px(200);
-        int height = dip2px(200);
+        int padding = 40;
+        int width = 144*3 + padding*2;
         int cols = (int)Math.ceil(Math.sqrt(count));
-        int margin = (int)Math.pow(20, 1.0 / cols);
-        int size = (width / cols) - 2*margin;
+        int size = (width - padding*2) / cols;
 
-        Drawable[] icons = new Drawable[1 + count];
-        icons[0] = context.getDrawable(isOpen ? R.drawable.folder_open : R.drawable.folder_close);
+        Drawable[] icons = new Drawable[count + 1];
+        icons[0] = context.getResources().getDrawable(R.drawable.folder_close);
+        icons[0].setBounds(0, 0, width, width);
 
         for(int i = 0;i<count;i++){
-            icons[i+1] = children.get(i).icon;
+            BitmapDrawable bd = (BitmapDrawable)children.get(i).icon;
+            icons[i + 1] = bd;
+            bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
+            //bd.setGravity(Gravity.LEFT);
         }
 
-        LayerDrawable layer = new LayerDrawable(icons);
-        layer.setBounds(0, 0, 0, 0);
-        layer.setLayerInset(0, 0, 0, 0, 0);
+//        LayerDrawable layer = new LayerDrawable(icons);
+//
+//        layer.setLayerInset(0, 0, 0, 0, 0);
+//
+//        for(int i = 0;i<count;i++){
+//            int row = i / cols;
+//            int col = i % cols;
+//            int left = col * size + padding;
+//            int top = row * size + padding;
+//            int right = width - left - size;
+//            int bottom = width - top - size;
+//
+//            layer.setLayerInset(i + 1, left, top, right, bottom);
+//
+//            Log.w("icon location:", String.format("%s, %d, %d, %d, %d, %d", children.get(i).name, size, left, top, right, bottom));
+//        }
+//
+//        return  layer;
 
-        if(children.size() == 4)
-            Log.w("icon message:", String.format("%d, %d, %d, %d, %d", width, count, cols, margin, size));
+        Bitmap bmp = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmp);
 
-        for(int r = 0;r<cols;r++){
-            for(int c = 0;c<cols;c++){
-                int index = r*cols + c + 1;
-                if(index > count) break;
-                int left = c*(size + margin*2) + margin;
-                int right = width - left - size;
-                int top = r*(size + margin*2) + margin;
-                int bottom = height - top - size;
-                layer.setLayerInset(index, left, top, right, bottom);
-                if(children.size() == 4) Log.w("icon position:", String.format("name: %s, left:%d, top:%d, right:%d, bottom:%d", children.get(index - 1).name, left, top, right, bottom));
-            }
+//        Paint paint = new Paint();
+//        paint.setColor(Color.WHITE);
+//        paint.setStyle(Paint.Style.STROKE);
+//        paint.setStrokeWidth(40);
+//        canvas.drawRoundRect(0, 0, width, width, 100, 100, paint);
+        //canvas.drawBitmap(((NinePatchDrawable)(icons[0]))., icons[0].getBounds(), new Rect(0, 0, width, width), null);
+
+        for(int i = 0;i<count;i++){
+            int row = i / cols;
+            int col = i % cols;
+            int left = col * size + padding;
+            int top = row * size + padding;
+            int right = width - left - size;
+            int bottom = width - top - size;
+
+            canvas.drawBitmap(((BitmapDrawable)(icons[i+1])).getBitmap(), icons[i+1].getBounds(), new Rect(left, top, left + size, top + size), null);
         }
 
-        return layer;
+        icons[0].draw(canvas);
+
+        canvas.save(Canvas.ALL_SAVE_FLAG);
+        return new BitmapDrawable(bmp);
     }
 
     private int dip2px(float dpValue) {
