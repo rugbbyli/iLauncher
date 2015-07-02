@@ -5,6 +5,9 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.StateSet;
+import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +29,7 @@ import rugbbyli.ilauncher.sql.AppListDAO;
 public class AppListActivity extends Activity implements NewFolderFragment.OnFragmentInteractionListener {
 
     public static boolean hasCreated = false;
+    private AppListState appGridViewState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,8 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         }
         updateView();
         addClickListener();
+        addItemSelectListener();
+
 
         hasCreated = true;
     }
@@ -50,6 +56,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
     @Override
     protected void onDestroy() {
         hasCreated = false;
+        super.onDestroy();
     }
 
     @Override
@@ -122,6 +129,37 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         };
 
         appGridView.setAdapter(adapter);
+
+        this.appGridViewState = AppListState.Normal;
+    }
+
+    private void addItemSelectListener(){
+        appGridView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
+
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+
+            }
+        });
     }
 
     private void addClickListener(){
@@ -133,21 +171,27 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
             public void onItemClick(AdapterView<?> av, View v, int pos, long id) {
                 AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
-                if(item.type == AppListItemType.App) {
-                    String name = ((AppItem)(item)).id.toString();
-
-                    if (catchItemClick(name)) return;
-
-                    Intent i = getPackageManager().getLaunchIntentForPackage(name);
-
-                    boolean isChecked = appGridView.isItemChecked(pos);
-
-                    appGridView.clearChoices();
-
-                    AppListActivity.this.startActivity(i);
+                if(appGridViewState == AppListState.CreatingFolder){
+                    Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
+                    appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
                 }
-                else {
 
+                else if(appGridViewState == AppListState.Normal) {
+                    if (item.type == AppListItemType.App) {
+                        String name = ((AppItem) (item)).id.toString();
+
+                        if (catchItemClick(name)) return;
+
+
+                        boolean isChecked = appGridView.isItemChecked(pos);
+
+                        appGridView.clearChoices();
+
+                        startActivity(((AppItem) item).intent);
+                        //AppHelper.getCurrent().StartAppWithPackageName(name);
+                    } else {
+
+                    }
                 }
             }
 
@@ -160,7 +204,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
             showNewFolderPop();
             return true;
         }
-        if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE){
+        if(appGridViewState == AppListState.CreatingFolder){
             return true;
         }
         return false;
@@ -175,20 +219,20 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         parms.setMargins(0, AppHelper.getCurrent().dip2px(70), 0, 0);
         appGridView.setLayoutParams(parms);
 
-        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-
+        //appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        appGridViewState = AppListState.CreatingFolder;
     }
 
     private void hideNewFolderPop(){
         getFragmentManager().beginTransaction().remove(newFolderFragment).commit();
 
         FrameLayout.LayoutParams parms = (FrameLayout.LayoutParams)appGridView.getLayoutParams();
-        parms.setMargins(0,0,0,0);
+        parms.setMargins(0, 0, 0, 0);
         appGridView.setLayoutParams(parms);
 
-        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        //appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         appGridView.clearChoices();
-
+        appGridViewState = AppListState.Normal;
     }
 
     public void newFolderPop_buttonCancel_Click(View v){

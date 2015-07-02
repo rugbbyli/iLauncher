@@ -1,7 +1,9 @@
 package rugbbyli.ilauncher;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
@@ -65,7 +67,9 @@ public class AppHelper {
 
             if(launchers.contains(id)) continue;
 
+            ComponentName comopnentName = new ComponentName(info.activityInfo.applicationInfo.packageName, info.activityInfo.name);
             AppItem app = new AppItem(id, info.activityInfo.loadLabel(manager), info.activityInfo.loadIcon(manager));
+            app.setStartInfo(comopnentName, 270532608);
 
             //对于文件夹内的app
             if(folderApps.containsKey(id)){
@@ -311,6 +315,57 @@ public class AppHelper {
     public FolderItem setFolderIcon(FolderItem item){
         item.icon = getFolderIcon(item.isOpen, item.getItems());
         return item;
+    }
+
+    public void StartAppWithPackageName(String pkgName){
+
+            Intent i = context.getPackageManager().getLaunchIntentForPackage(pkgName);
+            i.addCategory(Intent.CATEGORY_LAUNCHER);
+            i.setAction(Intent.ACTION_MAIN);
+            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            i.setFlags(270532608);
+            context.getApplicationContext().startActivity(i);
+
+    }
+
+    public void doStartApplicationWithPackageName(String packagename) {
+
+        // 通过包名获取此APP详细信息，包括Activities、services、versioncode、name等等
+        PackageInfo packageinfo = null;
+        try {
+            packageinfo = context.getPackageManager().getPackageInfo(packagename, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (packageinfo == null) {
+            return;
+        }
+
+        // 创建一个类别为CATEGORY_LAUNCHER的该包名的Intent
+        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        resolveIntent.setPackage(packageinfo.packageName);
+
+        // 通过getPackageManager()的queryIntentActivities方法遍历
+        List<ResolveInfo> resolveinfoList = context.getPackageManager()
+                .queryIntentActivities(resolveIntent, 0);
+
+        ResolveInfo resolveinfo = resolveinfoList.iterator().next();
+        if (resolveinfo != null) {
+            // packagename = 参数packname
+            String packageName = resolveinfo.activityInfo.packageName;
+            // 这个就是我们要找的该APP的LAUNCHER的Activity[组织形式：packagename.mainActivityname]
+            String className = resolveinfo.activityInfo.name;
+            // LAUNCHER Intent
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+            // 设置ComponentName参数1:packagename参数2:MainActivity路径
+            ComponentName cn = new ComponentName(packageName, className);
+
+            intent.setComponent(cn);
+            context.startActivity(intent);
+        }
     }
 
     public int dip2px(float dpValue) {
