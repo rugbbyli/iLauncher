@@ -1,0 +1,26 @@
+数据库名和字段：
+AppListDics
+	dic
+	dic
+	...
+	
+AppListDicApps
+	appid / dic
+	appid / dic
+	
+----------------------------------------------------------------
+
+AppGridView---》显示列表
+InstalledApps---》显示列表的数据源（AppListItem类型，与GridView显示项一一对应）			如何刷新？
+Folders/FolderApps---》数据库对应的内存副本 （记录了文件夹和文件夹内app）     			每次操作数据库时刷新
+
+整体流程：
+1，打开app，刷新InstalledApps和Folders/FolderApps和AppGridView；
+2，当对列表进行操作（如创建删除文件夹、移动App）时，
+	1，更新数据库，并同步更新Folders/FolderApps；
+	2，更新InstalledApps（当前是完整更新，能不能做到局部更新，只更新变化的部分？）；
+	3，刷新AppGridView；
+
+更新InstalledApps：
+1，当对列表进行操作时，放到第一步，跟数据库操作同步更新？
+2，当app列表发生变化（比如卸载安装了app），如何更新？

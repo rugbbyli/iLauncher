@@ -32,11 +32,11 @@ public class AppListDAO {
         boolean ret = (boolean)SafeDBOperate(new DBOperator(){
             @Override
             public Object Operate(SQLiteDatabase db){
-                db.execSQL(String.format("insert into %s(%s) values (%s)", DBConfig.Table_Folder, DBConfig.Key_Folder, item.name));
+                db.execSQL(String.format("insert into %s(%s) values ('%s')", DBConfig.Table_Folder, DBConfig.Key_Folder, item.name));
 
                 List<AppListItem> apps = item.getItems();
                 for(int i = 0;i<apps.size();i++){
-                    db.execSQL(String.format("insert into %s(%s,%s) values (%s,%s)", DBConfig.Table_FolderApp, DBConfig.Key_Appid, DBConfig.Key_Folder, ((AppItem)apps.get(i)).id, item.name));
+                    db.execSQL(String.format("insert into %s(%s,%s) values ('%s','%s')", DBConfig.Table_FolderApp, DBConfig.Key_Appid, DBConfig.Key_Folder, ((AppItem)apps.get(i)).id, item.name));
                 }
                 return true;
             }
@@ -64,11 +64,11 @@ public class AppListDAO {
         boolean ret = (boolean)SafeDBOperate(new DBOperator(){
             @Override
             public Object Operate(SQLiteDatabase db){
-                db.execSQL(String.format("delete from %s where %s = %s", DBConfig.Table_Folder, DBConfig.Key_Folder, item.name));
+                db.execSQL(String.format("delete from %s where %s = '%s'", DBConfig.Table_Folder, DBConfig.Key_Folder, item.name));
 
                 List<AppListItem> apps = item.getItems();
                 for(int i = 0;i<apps.size();i++){
-                    db.execSQL(String.format("delete from %s where %s = %s", DBConfig.Table_FolderApp, DBConfig.Key_Appid, ((AppItem)apps.get(i)).id));
+                    db.execSQL(String.format("delete from %s where %s = '%s'", DBConfig.Table_FolderApp, DBConfig.Key_Appid, ((AppItem)apps.get(i)).id));
                 }
                 return true;
             }
@@ -154,7 +154,7 @@ public class AppListDAO {
             @Override
             public Object Operate(SQLiteDatabase db) {
 
-                db.execSQL(String.format("delete from %s where %s = %s", DBConfig.Table_FolderApp, DBConfig.Key_Appid, appid));
+                db.execSQL(String.format("delete from %s where %s = '%s'", DBConfig.Table_FolderApp, DBConfig.Key_Appid, appid));
                 return true;
             }
         });

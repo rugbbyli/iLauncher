@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_checked="true" android:state_pressed="false" >
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:state_checkable="true" >
         <shape>
-            <!-- 设置背景填充色为黑色 -->
-            <solid android:color="#df000000"/>
             <!-- 设置边框宽度为1dp，边框颜色为白色 -->
-            <!--<stroke android:width="4dp" android:color="#ff000000" />-->
+            <stroke android:width="4dp" android:color="#ff000000" />
             <!-- 设置按钮圆角半径为5dp -->
-            <corners android:radius="5dp" />
+            <corners android:radius="20dp" />
         </shape>
     </item>
+
+    <item android:state_checked="true" android:drawable="@drawable/item_select"/>
 
     <!-- 没有焦点时的背景图片 -->
     <item android:state_window_focused="false" android:drawable="@drawable/blank" />
@@ -41,5 +41,5 @@
     <!--获得焦点时的图片背景-->
     <item android:state_focused="true"  android:drawable="@drawable/blank" />
     <!-- 默认时的背景图片-->
-    <item android:drawable="@drawable/blank" />
+    <item android:drawable="@drawable/item_select" />
 </selector>

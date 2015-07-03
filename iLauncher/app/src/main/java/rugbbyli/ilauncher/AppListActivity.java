@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.util.StateSet;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -172,8 +173,11 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
                 AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
                 if(appGridViewState == AppListState.CreatingFolder){
-                    Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
-                    appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
+                    boolean isChecked = appGridView.isItemChecked(pos);
+                    Log.w("item is checked:", Boolean.toString(isChecked));
+                    //appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
+                    //v.setBackgroundResource(isChecked ? R.drawable.item_select:0);
+                    //v.setPadding(0,0,0,0);
                 }
 
                 else if(appGridViewState == AppListState.Normal) {
@@ -219,7 +223,8 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         parms.setMargins(0, AppHelper.getCurrent().dip2px(70), 0, 0);
         appGridView.setLayoutParams(parms);
 
-        //appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        appGridView.clearChoices();
         appGridViewState = AppListState.CreatingFolder;
     }
 
@@ -230,7 +235,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         parms.setMargins(0, 0, 0, 0);
         appGridView.setLayoutParams(parms);
 
-        //appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         appGridView.clearChoices();
         appGridViewState = AppListState.Normal;
     }
@@ -250,7 +255,21 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
         if(AppListDAO.ContainsFolder(name)) return;
 
+        SparseBooleanArray positions = appGridView.getCheckedItemPositions();
 
+        FolderItem folder = new FolderItem(name, getDrawable(R.drawable.folder_close));
+        Log.w("fuckhere...", positions.size() + "");
+        for(int i = 0;i<positions.size();i++){
+            Log.w("fuckhehe2...", positions.keyAt(i) + ",");
+            AppListItem item = AppHelper.getCurrent().getInstallApps().get(positions.keyAt(i));
+            folder.getItems().add(item);
+        }
+
+        AppListDAO.AddFolder(folder);
+
+        AppHelper.getCurrent().updateInstallApps();
+
+        appGridView.deferNotifyDataSetChanged();
 
         hideNewFolderPop();
     }
