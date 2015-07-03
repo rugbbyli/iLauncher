@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.util.StateSet;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -142,12 +143,14 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
                 AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
                 if(appGridViewState == AppListState.CreatingFolder){
+
                     //((AppListItemLayout)v).toggle();
                     //Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
                     //Log.w("item is checked:", Boolean.toString(((AppListItemLayout)v).isChecked()));
                     //Log.w("change item state", "--------------------");
                     //appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
-                    v.setSelected(!v.isSelected());
+                    //v.setSelected(!v.isSelected());
+
                 }
 
                 else if(appGridViewState == AppListState.Normal) {
@@ -194,6 +197,9 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         appGridView.setLayoutParams(parms);
 
         appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+
+        appGridView.clearChoices();
+
         appGridViewState = AppListState.CreatingFolder;
     }
 
@@ -224,7 +230,21 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
         if(AppListDAO.ContainsFolder(name)) return;
 
+        SparseBooleanArray positions = appGridView.getCheckedItemPositions();
 
+        FolderItem folder = new FolderItem(name, getDrawable(R.drawable.folder_close));
+        Log.w("fuckhere...", positions.size() + "");
+        for(int i = 0;i<positions.size();i++){
+            Log.w("fuckhehe2...", positions.keyAt(i) + ",");
+            AppListItem item = AppHelper.getCurrent().getInstallApps().get(positions.keyAt(i));
+            folder.getItems().add(item);
+        }
+
+        AppListDAO.AddFolder(folder);
+
+        AppHelper.getCurrent().updateInstallApps();
+
+        appGridView.deferNotifyDataSetChanged();
 
         hideNewFolderPop();
     }

@@ -15,24 +15,19 @@
         android:id="@+id/gridViewAppList"
         android:layout_alignParentLeft="false"
         android:layout_alignParentRight="false"
-        android:background="@android:color/transparent"
         android:numColumns="4"
-        android:gravity="bottom"
         android:choiceMode="singleChoice"
-        android:verticalSpacing="5dip"
-        android:horizontalSpacing="0dp"
+        android:verticalSpacing="15dip"
+        android:horizontalSpacing="10dp"
         android:layout_centerHorizontal="true"
-        android:stretchMode="columnWidth"
         android:scrollbars="none"
-        android:columnWidth="80dip"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="0dp"
+
         android:layout_gravity="bottom"
-        android:listSelector="@drawable/app_list_selector" />
+        android:listSelector="@drawable/app_list_selector"
+        android:drawSelectorOnTop="true"
+        android:stretchMode="columnWidth"
+        android:columnWidth="80dip"
+        android:clickable="false" />
 
     <ImageButton
         android:layout_width="50dp"

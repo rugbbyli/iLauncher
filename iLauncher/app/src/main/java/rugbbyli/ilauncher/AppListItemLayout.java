@@ -40,9 +40,10 @@ public class AppListItemLayout extends RelativeLayout implements Checkable {
     @Override
     protected int[] onCreateDrawableState(int extraSpace) {
         final int[] drawableState = super.onCreateDrawableState(extraSpace + 1);
-        if (isChecked()) {
+        if (m_isChecked) {
             mergeDrawableStates(drawableState, CHECKED_STATE_SET);
         }
+        Log.w("item drawable", "onCreateDrawableState");
         return drawableState;
     }
 

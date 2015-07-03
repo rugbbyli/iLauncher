@@ -140,6 +140,11 @@ public class AppHelper {
         return installApps;
     }
 
+    public List<AppListItem> updateInstallApps(){
+        getAppList();
+        return installApps;
+    }
+
     public Drawable getFolderIcon2(boolean isOpen, List<AppListItem> children){
         int count = children.size();
         if(count > 9) count = 9;
