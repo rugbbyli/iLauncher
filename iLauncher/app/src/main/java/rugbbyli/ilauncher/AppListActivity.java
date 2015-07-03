@@ -47,7 +47,6 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         }
         updateView();
         addClickListener();
-        addItemSelectListener();
 
 
         hasCreated = true;
@@ -133,35 +132,6 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         this.appGridViewState = AppListState.Normal;
     }
 
-    private void addItemSelectListener(){
-        appGridView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-            @Override
-            public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
-
-            }
-
-            @Override
-            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                return false;
-            }
-
-            @Override
-            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                return false;
-            }
-
-            @Override
-            public void onDestroyActionMode(ActionMode actionMode) {
-
-            }
-        });
-    }
-
     private void addClickListener(){
 
         appGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -172,8 +142,12 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
                 AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
                 if(appGridViewState == AppListState.CreatingFolder){
-                    Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
-                    appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
+                    //((AppListItemLayout)v).toggle();
+                    //Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
+                    //Log.w("item is checked:", Boolean.toString(((AppListItemLayout)v).isChecked()));
+                    //Log.w("change item state", "--------------------");
+                    //appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
+                    v.setSelected(!v.isSelected());
                 }
 
                 else if(appGridViewState == AppListState.Normal) {
@@ -219,7 +193,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         parms.setMargins(0, AppHelper.getCurrent().dip2px(70), 0, 0);
         appGridView.setLayoutParams(parms);
 
-        //appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
         appGridViewState = AppListState.CreatingFolder;
     }
 
@@ -230,7 +204,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         parms.setMargins(0, 0, 0, 0);
         appGridView.setLayoutParams(parms);
 
-        //appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         appGridView.clearChoices();
         appGridViewState = AppListState.Normal;
     }
