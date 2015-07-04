@@ -1,4 +1,4 @@
-数据库名和字段：
+﻿数据库名和字段：
 AppListDics
 	dic
 	dic
@@ -24,3 +24,6 @@ Folders/FolderApps---》数据库对应的内存副本 （记录了文件夹和�
 更新InstalledApps：
 1，当对列表进行操作时，放到第一步，跟数据库操作同步更新？
 2，当app列表发生变化（比如卸载安装了app），如何更新？
+
+
+fuckfuckfuck!!!!!      Selector状态相当混乱，完全无法搞定。。

@@ -13,9 +13,10 @@ public class AppListItem implements Comparable<AppListItem> {
     public Drawable icon;
     public AppListItemType type;
 
-    public AppListItem(CharSequence name, Drawable icon){
+    public AppListItem(CharSequence name, Drawable icon, AppListItemType type){
         this.name = name;
         this.icon = icon;
+        this.type = type;
     }
 
     static final Collator collator = Collator.getInstance(Locale.CHINA);

@@ -92,7 +92,7 @@ public class AppHelper {
 
         Collections.sort(installApps);
 
-        AppItem add = new AppItem(Constants.id_new_folder, "新建文件夹", context.getResources().getDrawable(R.drawable.add));
+        AppListItem add = new AppListItem("新建文件夹", context.getResources().getDrawable(R.drawable.add), AppListItemType.AddFolder);
 
         //add.icon.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.ADD);
 
@@ -101,18 +101,9 @@ public class AppHelper {
         //在列表顶部排序并插入文件夹
         Collections.sort(folderItems);
         for(int i = 0;i<folderItems.size();i++){
-            installApps.add(i, setFolderIcon(folderItems.get(i)));
+            folderItems.get(i).refreshIcon();
+            installApps.add(i, folderItems.get(i));
         }
-
-//        boolean open = false;
-//        List<AppListItem> testitems = new ArrayList<>();
-//        for(int i = 0;i<12;i++) {
-//            testitems.add(installApps.get(i));
-//            Drawable d1 = getFolderIcon(open, testitems);
-//            FolderItem item = new FolderItem("文件夹" + (i+1), d1);
-//            installApps.add(item);
-//            open = !open;
-//        }
     }
 
     private List<String> getLauncherApp(){
@@ -228,149 +219,57 @@ public class AppHelper {
 
     public Drawable getFolderIcon(boolean isOpen, List<AppListItem> children){
 
-        BitmapDrawable bg = (BitmapDrawable)context.getResources().getDrawable(isOpen ? R.drawable.folder_open : R.drawable.folder_close);
+        int width = 100;
 
-        if(children == null || children.size() == 0)
-            return bg;
+        NinePatchDrawable bg = (NinePatchDrawable)context.getResources().getDrawable(isOpen ? R.drawable.folder_open : R.drawable.folder_close);
+        //bg.setBounds(0, 0, bg.getIntrinsicWidth(), bg.getIntrinsicHeight());
+        //设置当bg绘制在canvas里面时绘制的大小和区域
+        bg.setBounds(0, 0, width, width);
 
-        int count = children.size();
-        if(count > 9) count = 9;
-
-        int padding = 20;
-        int width = 200;
-        int cols = (int)Math.ceil(Math.sqrt(count));
-        int margin = 20 / cols;
-        int rowWidth = (width - padding*2) / cols;
-        int size = rowWidth - 2*margin;
-
+        //要画的图标
         Bitmap bmp = Bitmap.createBitmap(width, width, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
 
-        bg.setBounds(0, 0, bg.getIntrinsicWidth(), bg.getIntrinsicHeight());
+        if(children != null && children.size() != 0) {
+            int count = children.size();
+            if (count > 9) count = 9;
 
-        if(isOpen){
-            canvas.drawBitmap(bg.getBitmap(), bg.getBounds(), new Rect(0, 0, width, width), null);
+            int padding = width / 20;
+
+            int cols = (int) Math.ceil(Math.sqrt(count));
+            int margin = 1;
+            int rowWidth = (width - padding * 2) / cols;
+            int size = rowWidth - 2 * margin;
+
+            if (isOpen) {
+                bg.draw(canvas);
+            }
+
+            for (int i = 0; i < count; i++) {
+                BitmapDrawable bd = (BitmapDrawable) children.get(i).icon;
+
+                int row = i / cols;
+                int col = i % cols;
+                int left = col * rowWidth + margin + padding;
+                int top = row * rowWidth + margin + padding;
+
+                bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
+
+                canvas.drawBitmap(bd.getBitmap(), bd.getBounds(), new Rect(left, top, left + size, top + size), null);
+            }
+
+            if (!isOpen) {
+                bg.draw(canvas);
+            }
         }
-
-        for(int i = 0;i<count;i++){
-            BitmapDrawable bd = (BitmapDrawable)children.get(i).icon;
-
-            int row = i / cols;
-            int col = i % cols;
-            int left = col * rowWidth + margin + padding;
-            int top = row * rowWidth + margin + padding;
-            //int right = width - left - size;
-            //int bottom = width - top - size;
-            bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
-
-            canvas.drawBitmap(bd.getBitmap(), bd.getBounds(), new Rect(left, top, left + size, top + size), null);
+        else {
+            bg.draw(canvas);
         }
-
-        if(!isOpen){
-            canvas.drawBitmap(bg.getBitmap(), bg.getBounds(), new Rect(0, 0, width, width), null);
-        }
-
-//        LayerDrawable layer = new LayerDrawable(icons);
-//
-//        layer.setLayerInset(0, 0, 0, 0, 0);
-//
-//        for(int i = 0;i<count;i++){
-//            int row = i / cols;
-//            int col = i % cols;
-//            int left = col * size + padding;
-//            int top = row * size + padding;
-//            int right = width - left - size;
-//            int bottom = width - top - size;
-//
-//            layer.setLayerInset(i + 1, left, top, right, bottom);
-//
-//            Log.w("icon location:", String.format("%s, %d, %d, %d, %d, %d", children.get(i).name, size, left, top, right, bottom));
-//        }
-//
-//        return  layer;
-
-
-
-//        Paint paint = new Paint();
-//        paint.setColor(Color.WHITE);
-//        paint.setStyle(Paint.Style.STROKE);
-//        paint.setStrokeWidth(40);
-//        canvas.drawRoundRect(0, 0, width, width, 100, 100, paint);
-        //canvas.drawBitmap(((NinePatchDrawable)(icons[0]))., icons[0].getBounds(), new Rect(0, 0, width, width), null);
-
-//        for(int i = 0;i<count;i++){
-//            int row = i / cols;
-//            int col = i % cols;
-//            int left = col * size + padding;
-//            int top = row * size + padding;
-//            int right = width - left - size;
-//            int bottom = width - top - size;
-//
-//            canvas.drawBitmap(((BitmapDrawable)(icons[i+1])).getBitmap(), icons[i+1].getBounds(), new Rect(left, top, left + size, top + size), null);
-//        }
-//
-//        icons[0].draw(canvas);
 
         canvas.save(Canvas.ALL_SAVE_FLAG);
         canvas.restore();
 
         return new BitmapDrawable(bmp);
-    }
-
-    public FolderItem setFolderIcon(FolderItem item){
-        item.icon = getFolderIcon(item.isOpen, item.getItems());
-        return item;
-    }
-
-    public void StartAppWithPackageName(String pkgName){
-
-            Intent i = context.getPackageManager().getLaunchIntentForPackage(pkgName);
-            i.addCategory(Intent.CATEGORY_LAUNCHER);
-            i.setAction(Intent.ACTION_MAIN);
-            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            i.setFlags(270532608);
-            context.getApplicationContext().startActivity(i);
-
-    }
-
-    public void doStartApplicationWithPackageName(String packagename) {
-
-        // 通过包名获取此APP详细信息，包括Activities、services、versioncode、name等等
-        PackageInfo packageinfo = null;
-        try {
-            packageinfo = context.getPackageManager().getPackageInfo(packagename, 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        if (packageinfo == null) {
-            return;
-        }
-
-        // 创建一个类别为CATEGORY_LAUNCHER的该包名的Intent
-        Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
-        resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        resolveIntent.setPackage(packageinfo.packageName);
-
-        // 通过getPackageManager()的queryIntentActivities方法遍历
-        List<ResolveInfo> resolveinfoList = context.getPackageManager()
-                .queryIntentActivities(resolveIntent, 0);
-
-        ResolveInfo resolveinfo = resolveinfoList.iterator().next();
-        if (resolveinfo != null) {
-            // packagename = 参数packname
-            String packageName = resolveinfo.activityInfo.packageName;
-            // 这个就是我们要找的该APP的LAUNCHER的Activity[组织形式：packagename.mainActivityname]
-            String className = resolveinfo.activityInfo.name;
-            // LAUNCHER Intent
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-            // 设置ComponentName参数1:packagename参数2:MainActivity路径
-            ComponentName cn = new ComponentName(packageName, className);
-
-            intent.setComponent(cn);
-            context.startActivity(intent);
-        }
     }
 
     public int dip2px(float dpValue) {

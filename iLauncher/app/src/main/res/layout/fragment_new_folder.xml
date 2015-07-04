@@ -7,7 +7,7 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:id="@+id/editText_name"
         android:layout_gravity="top"
         android:focusableInTouchMode="true"
@@ -18,10 +18,14 @@
         android:paddingLeft="10dp"
         android:textSize="24dp"
         android:textStyle="bold"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:paddingTop="0dp"
         android:paddingBottom="0dp"
-        android:paddingRight="0dp" />
+        android:paddingRight="0dp"
+        android:layout_margin="0dp"
+        android:background="@drawable/folder_open"
+        android:singleLine="true"
+        android:maxLength="9" />
 
     <ImageButton
         android:layout_width="50dp"
@@ -32,7 +36,7 @@
         android:background="@drawable/ok"
         android:layout_marginRight="10dp"
         android:onClick="newFolderPop_buttonOk_Click"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="5dp" />
 
     <ImageButton
         android:layout_width="50dp"
@@ -43,5 +47,5 @@
         android:layout_marginRight="70dp"
         android:background="@drawable/cancel"
         android:onClick="newFolderPop_buttonCancel_Click"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="5dp" />
 </FrameLayout>

@@ -23,6 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import rugbbyli.ilauncher.sql.AppListDAO;
 
@@ -31,11 +32,14 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
     public static boolean hasCreated = false;
     private AppListState appGridViewState;
+    private AppListViewAdapter m_adapter;
+    private GridView appGridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
+
         //在虚拟按键上显示menu
         try {
             getWindow().addFlags(WindowManager.LayoutParams.class.getField("FLAG_NEEDS_MENU_KEY").getInt(null));
@@ -46,9 +50,9 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         catch (IllegalAccessException e) {
 
         }
+
         updateView();
         addClickListener();
-
 
         hasCreated = true;
     }
@@ -62,7 +66,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
-            closeAppList(null);
+            hideSelf(null);
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -90,45 +94,12 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         return super.onOptionsItemSelected(item);
     }
 
-    private GridView appGridView;
     private void updateView(){
         appGridView = (GridView)findViewById(R.id.gridViewAppList);
 
-        ArrayAdapter<AppListItem> adapter = new ArrayAdapter<AppListItem>(this,
+        m_adapter = new AppListViewAdapter(this, appGridView);
 
-                R.layout.sample_app_item,
-
-                AppHelper.getCurrent().getInstallApps()) {
-
-            @Override
-
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if(convertView == null){
-                    convertView = getLayoutInflater().inflate(R.layout.sample_app_item, null);
-                }
-
-                if(appGridView.getChoiceMode() == AbsListView.CHOICE_MODE_MULTIPLE){
-                    if(appGridView.isItemChecked(position)){
-                        //convertView.setBackgroundResource(R.drawable.item_select);
-                    }
-                    else{
-                        //convertView.setBackgroundResource(0);
-                    }
-                }
-
-                ImageView appIcon = (ImageView)convertView.findViewById(R.id.icon);
-                appIcon.setImageDrawable(AppHelper.getCurrent().getInstallApps().get(position).icon);
-                TextView appName = (TextView)convertView.findViewById(R.id.app_label);
-                appName.setText(AppHelper.getCurrent().getInstallApps().get(position).name);
-
-                //if(appGridView.getSelectedItemPosition())
-
-                return convertView;
-            }
-
-        };
-
-        appGridView.setAdapter(adapter);
+        appGridView.setAdapter(m_adapter);
 
         this.appGridViewState = AppListState.Normal;
     }
@@ -142,49 +113,74 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
             public void onItemClick(AdapterView<?> av, View v, int pos, long id) {
                 AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
-                if(appGridViewState == AppListState.CreatingFolder){
+                switch (appGridViewState){
+                    case Normal:
+                        if (item.type == AppListItemType.App) {
+                            String name = ((AppItem) (item)).id.toString();
 
-                    //((AppListItemLayout)v).toggle();
-                    //Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
-                    //Log.w("item is checked:", Boolean.toString(((AppListItemLayout)v).isChecked()));
-                    //Log.w("change item state", "--------------------");
-                    //appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
-                    //v.setSelected(!v.isSelected());
+                            boolean isChecked = appGridView.isItemChecked(pos);
 
+                            appGridView.clearChoices();
+
+                            startActivity(((AppItem) item).intent);
+
+                        } else if(item.type == AppListItemType.Folder) {
+
+                            m_adapter.toggleFolder(pos);
+                            m_adapter.notifyDataSetChanged();
+                        }
+                        else if(item.type == AppListItemType.AddFolder){
+                            showNewFolderPop();
+                        }
+                        break;
+                    case CreatingFolder:
+                        if(item.type == AppListItemType.App) {
+                            Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
+                            m_adapter.notifyDataSetChanged();
+                        }
+                        else{
+                            appGridView.setItemChecked(pos, false);
+                        }
+                        break;
+                    case OpenFolder:
+                        showNewFolderPop();
+                        break;
                 }
 
-                else if(appGridViewState == AppListState.Normal) {
-                    if (item.type == AppListItemType.App) {
-                        String name = ((AppItem) (item)).id.toString();
-
-                        if (catchItemClick(name)) return;
-
-
-                        boolean isChecked = appGridView.isItemChecked(pos);
-
-                        appGridView.clearChoices();
-
-                        startActivity(((AppItem) item).intent);
-                        //AppHelper.getCurrent().StartAppWithPackageName(name);
-                    } else {
-
-                    }
-                }
+//                if(appGridViewState == AppListState.CreatingFolder){
+//
+//                    //((AppListItemLayout)v).toggle();
+//                    Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
+//                    //Log.w("item is checked:", Boolean.toString(((AppListItemLayout)v).isChecked()));
+//                    //Log.w("change item state", "--------------------");
+//                    //appGridView.setItemChecked(pos, !appGridView.isItemChecked(pos));
+//                    //v.setSelected(!v.isSelected());
+//                    //appGridView.refreshDrawableState();
+//                    m_adapter.notifyDataSetChanged();
+//                }
+//
+//                else if(appGridViewState == AppListState.Normal) {
+//                    if (item.type == AppListItemType.App) {
+//                        String name = ((AppItem) (item)).id.toString();
+//
+//                        boolean isChecked = appGridView.isItemChecked(pos);
+//
+//                        appGridView.clearChoices();
+//
+//                        startActivity(((AppItem) item).intent);
+//
+//                    } else if(item.type == AppListItemType.Folder) {
+//
+//                        m_adapter.toggleFolder(pos);
+//                        m_adapter.notifyDataSetChanged();
+//                    }
+//                }
+//                else if(appGridViewState == AppListState.OpenFolder){
+//                    showNewFolderPop();
+//                }
             }
-
         });
 
-    }
-
-    private boolean catchItemClick(String id){
-        if(id.equals(Constants.id_new_folder)){
-            showNewFolderPop();
-            return true;
-        }
-        if(appGridViewState == AppListState.CreatingFolder){
-            return true;
-        }
-        return false;
     }
 
     Fragment newFolderFragment;
@@ -193,7 +189,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         getFragmentManager().beginTransaction().add(R.id.applist_layout, newFolderFragment).commit();
 
         FrameLayout.LayoutParams parms = (FrameLayout.LayoutParams)appGridView.getLayoutParams();
-        parms.setMargins(0, AppHelper.getCurrent().dip2px(70), 0, 0);
+        parms.setMargins(0, AppHelper.getCurrent().dip2px(60), 0, 0);
         appGridView.setLayoutParams(parms);
 
         appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
@@ -210,7 +206,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         parms.setMargins(0, 0, 0, 0);
         appGridView.setLayoutParams(parms);
 
-        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        appGridView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
         appGridView.clearChoices();
         appGridViewState = AppListState.Normal;
     }
@@ -225,33 +221,47 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         String name = text.getText().toString().trim();
 
         if(name.isEmpty()){
+            Toast.makeText(this, Constants.str_text_empty, Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if(AppListDAO.ContainsFolder(name)) return;
+        if(AppListDAO.ContainsFolder(name)) {
+            Toast.makeText(this, Constants.str_folder_exists, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         SparseBooleanArray positions = appGridView.getCheckedItemPositions();
 
-        FolderItem folder = new FolderItem(name, getDrawable(R.drawable.folder_close));
-        Log.w("fuckhere...", positions.size() + "");
+        FolderItem folder = new FolderItem(name, null);
+
         for(int i = 0;i<positions.size();i++){
-            Log.w("fuckhehe2...", positions.keyAt(i) + ",");
-            AppListItem item = AppHelper.getCurrent().getInstallApps().get(positions.keyAt(i));
+            int pos = positions.keyAt(i);
+            AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
+
             folder.getItems().add(item);
+            AppHelper.getCurrent().getInstallApps().remove(pos);
         }
+
+        folder.refreshIcon();
 
         AppListDAO.AddFolder(folder);
 
-        AppHelper.getCurrent().updateInstallApps();
+        AppHelper.getCurrent().getInstallApps().add(0, folder);
 
-        appGridView.deferNotifyDataSetChanged();
+        m_adapter.notifyDataSetChanged();
 
         hideNewFolderPop();
     }
 
-    public void closeAppList(View v){
-        Intent i = new Intent(this, HomeActivity.class);
+    public void hideSelf(View v){
+        if(appGridViewState == AppListState.CreatingFolder){
+            if(v == null){
+                hideNewFolderPop();
+            }
+            return;
+        }
 
+        Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
     }
 

@@ -12,15 +12,29 @@ public class FolderItem extends AppListItem {
 
     private List<AppListItem> items;
 
-    public boolean isOpen = false;
+    private boolean isOpen = false;
+    public void setIsOpen(boolean isOpen){
+        if(this.isOpen != isOpen) {
+            this.isOpen = isOpen;
+            refreshIcon();
+        }
+    }
+
+    public void toggle(){
+        setIsOpen(!isOpen);
+    }
 
     public FolderItem(CharSequence name, Drawable icon){
-        super(name, icon);
-        type = AppListItemType.Folder;
+        super(name, icon, AppListItemType.Folder);
+
         items = new ArrayList<>();
     }
 
     public List<AppListItem> getItems(){
         return items;
+    }
+
+    public void refreshIcon(){
+        icon = AppHelper.getCurrent().getFolderIcon(isOpen, items);
     }
 }

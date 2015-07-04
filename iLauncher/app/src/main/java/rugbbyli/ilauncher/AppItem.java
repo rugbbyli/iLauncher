@@ -18,10 +18,8 @@ public class AppItem extends AppListItem {
     public Intent intent;
 
     public AppItem(CharSequence id, CharSequence name, Drawable icon){
-        super(name, icon);
+        super(name, icon, AppListItemType.App);
         this.id = id;
-
-        type = AppListItemType.App;
     }
 
     public void setStartInfo(ComponentName componentName, int flag){
