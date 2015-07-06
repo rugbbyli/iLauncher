@@ -3,19 +3,31 @@ package rugbbyli.ilauncher;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 
 
 public class HomeActivity extends Activity {
+
+    private GestureDetector m_gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         new AppHelper(this);
+
+        m_gestureDetector = new GestureDetector(this, new GestureListener());
+        findViewById(R.id.shortcutList_Home).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return m_gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
     }
 
 

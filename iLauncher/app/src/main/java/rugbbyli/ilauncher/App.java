@@ -11,6 +11,12 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        current = this;
         DBOpenHelper.Init(this);
+    }
+
+    private static App current;
+    public static App getCurrent(){
+        return current;
     }
 }

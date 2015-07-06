@@ -2,6 +2,11 @@ package rugbbyli.ilauncher;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Shader;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -97,13 +102,45 @@ public class AppListViewAdapter extends BaseAdapter {
         }
 
         //if(appGridViewState == AppListState.CreatingFolder){
-        convertView.setBackgroundResource(m_gridView.isItemChecked(position) ? R.drawable.item_select: 0);
+        //convertView.setBackgroundResource(m_gridView.isItemChecked(position) ? R.drawable.item_select: 0);
+        convertView.setBackground(getItemBackground(m_gridView.isItemChecked(position)));
         //convertView.setPadding(0,0,0,0);
         //}
 
         //if(appGridView.getSelectedItemPosition())
 
         return convertView;
+    }
+
+    private Drawable[] m_itemBackgrounds = null;
+    private Drawable getItemBackground(boolean isChecked){
+        if(m_itemBackgrounds == null){
+            Drawable d = m_context.getDrawable(R.drawable.item_select);
+
+            Bitmap bmp = Bitmap.createBitmap(300, 300, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(bmp);
+            d.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            d.draw(canvas);
+
+            BitmapDrawable newBackground = new BitmapDrawable(m_context.getResources(), bmp) {
+                @Override
+                public int getMinimumWidth() {
+                    return 0;
+                }
+
+                @Override
+                public int getMinimumHeight() {
+                    return 0;
+                }
+            };
+
+            //newBackground.setTileModeXY(Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+
+            m_itemBackgrounds = new Drawable[2];
+            m_itemBackgrounds[0] = newBackground;
+            m_itemBackgrounds[1] = m_context.getDrawable(R.drawable.blank);
+        }
+        return m_itemBackgrounds[isChecked ? 0 : 1];
     }
 
     @Override

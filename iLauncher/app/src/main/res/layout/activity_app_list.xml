@@ -27,7 +27,9 @@
         android:drawSelectorOnTop="true"
         android:stretchMode="columnWidth"
         android:columnWidth="80dip"
-        android:clickable="false" />
+        android:clickable="true"
+        android:longClickable="true"
+        android:theme="@style/MyEdgeOverlayTheme" />
 
     <ImageButton
         android:layout_width="50dp"
