@@ -115,6 +115,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
                 switch (appGridViewState){
                     case Normal:
+                    case OpenFolder:
                         if (item.type == AppListItemType.App) {
                             String name = ((AppItem) (item)).id.toString();
 
@@ -141,9 +142,6 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
                         else{
                             appGridView.setItemChecked(pos, false);
                         }
-                        break;
-                    case OpenFolder:
-                        showNewFolderPop();
                         break;
                 }
 

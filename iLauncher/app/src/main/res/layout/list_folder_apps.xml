@@ -2,12 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/folder_background">
+    >
     <GridView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/gridViewAppList"
-        android:background="@drawable/blank"
+        android:id="@+id/folder_AppList"
+        android:background="@drawable/folder_background"
         android:numColumns="4"
         android:gravity="top"
         android:choiceMode="none"

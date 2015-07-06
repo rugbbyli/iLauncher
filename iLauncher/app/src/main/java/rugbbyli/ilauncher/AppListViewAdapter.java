@@ -1,5 +1,6 @@
 package rugbbyli.ilauncher;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -9,9 +10,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,6 +32,7 @@ public class AppListViewAdapter extends BaseAdapter {
     private FolderItem m_openedFolder = null;
     private int m_openFolderPosition = -1;
     private GridView m_gridView;
+    private GridView m_openedFolderGridView;
 
     public AppListViewAdapter(Activity context, GridView gridView){
         m_items = AppHelper.getCurrent().getInstallApps();
@@ -43,13 +50,24 @@ public class AppListViewAdapter extends BaseAdapter {
         m_openedFolder = item;
         m_openedFolder.setIsOpen(true);
         m_openFolderPosition = position;
+
+        int index = (m_openFolderPosition / m_gridView.getNumColumns() + 1) * m_gridView.getNumColumns();
+        AppListItem folderApp = new AppListItem(null, null, AppListItemType.FolderApp);
+        m_items.add(index, folderApp);
     }
 
     public void closeFolder(){
         if(m_openedFolder != null){
             m_openedFolder.setIsOpen(false);
+
+
+            int index = (m_openFolderPosition / m_gridView.getNumColumns() + 1) * m_gridView.getNumColumns();
+            m_items.remove(index);
+
             m_openFolderPosition = -1;
             m_openedFolder = null;
+
+
         }
     }
 
@@ -83,7 +101,7 @@ public class AppListViewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        AppListItem item = m_items.get(position);
+        final AppListItem item = m_items.get(position);
 
         if(item.type == AppListItemType.App || item.type == AppListItemType.Folder || item.type == AppListItemType.AddFolder){
             if(convertView == null){
@@ -97,8 +115,15 @@ public class AppListViewAdapter extends BaseAdapter {
         else if(item.type == AppListItemType.FolderApp){
             if(convertView == null){
                 convertView = m_context.getLayoutInflater().inflate(R.layout.list_folder_apps, null);
+                FrameLayout.LayoutParams parms = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                parms.width = m_context.getResources().getDisplayMetrics().widthPixels;
+                parms.height = ActionBar.LayoutParams.WRAP_CONTENT;
+                convertView.setLayoutParams(parms);
             }
 
+            m_openedFolderGridView = (GridView)convertView.findViewById(R.id.folder_AppList);
+
+            initFolderAppList(m_openedFolderGridView);
         }
 
         //if(appGridViewState == AppListState.CreatingFolder){
@@ -157,10 +182,10 @@ public class AppListViewAdapter extends BaseAdapter {
 //            }
 //        }
         if(m_items.get(position).type == AppListItemType.FolderApp){
-            return AppListItemType.FolderApp.ordinal();
+            return 1;
         }
         else {
-            return AppListItemType.App.ordinal();
+            return 0;
         }
     }
 
@@ -169,4 +194,36 @@ public class AppListViewAdapter extends BaseAdapter {
         return 2;
     }
 
+    private void initFolderAppList(GridView gridView){
+        gridView.setAdapter(new ArrayAdapter<AppListItem>(m_context,R.layout.sample_app_item, m_openedFolder.getItems()){
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                if(m_openedFolder == null) return convertView;
+
+                if(convertView == null){
+                    convertView = m_context.getLayoutInflater().inflate(R.layout.sample_app_item, null);
+                }
+
+                AppListItem app = m_openedFolder.getItems().get(position);
+                ImageView appIcon = (ImageView)convertView.findViewById(R.id.icon);
+                appIcon.setImageDrawable(app.icon);
+                TextView appName = (TextView)convertView.findViewById(R.id.app_label);
+                appName.setText(app.name);
+                convertView.setTag(app);
+                return convertView;
+            }
+        });
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AppListItem app = (AppListItem)view.getTag();
+                if (app != null && app.type == AppListItemType.App) {
+                    String name = ((AppItem) (app)).id.toString();
+
+                    m_context.startActivity(((AppItem) app).intent);
+                }
+            }
+        });
+    }
 }

@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable;
 
 import java.text.Collator;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by zxq on 2015/6/29.
