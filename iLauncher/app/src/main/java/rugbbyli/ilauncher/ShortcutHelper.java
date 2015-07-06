@@ -57,7 +57,37 @@ public class ShortcutHelper {
 
     }
 
-    public static String getCurrentLauncherPackageName(Context context) {
+    public static void getAllShortcuts(){
+        Context context = App.getCurrent().getApplicationContext();
+
+        if (TextUtils.isEmpty(AUTHORITY))
+            AUTHORITY = getAuthorityFromPermission(context);
+
+        final ContentResolver cr = context.getContentResolver();
+
+        if (!TextUtils.isEmpty(AUTHORITY)) {
+            try {
+                final Uri CONTENT_URI = Uri.parse(AUTHORITY);
+
+                Cursor c = cr.query(CONTENT_URI, new String[]{"*"}, null, null, null);
+
+                if(c != null) {
+                    while (c.moveToNext()) {
+                        int count = c.getColumnCount();
+
+                        Log.w("shortcut count:" + count, "");
+                    }
+
+                    c.close();
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+                Log.e("getAllShortcuts error:", e.getMessage());
+            }
+        }
+    }
+
+    private static String getCurrentLauncherPackageName(Context context) {
 
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
@@ -74,13 +104,13 @@ public class ShortcutHelper {
         }
     }
 
-    public static String getAuthorityFromPermissionDefault(Context context) {
+    private static String getAuthorityFromPermissionDefault(Context context) {
 
         return getThirdAuthorityFromPermission(context,
                 "com.android.launcher.permission.READ_SETTINGS");
     }
 
-    public static String getThirdAuthorityFromPermission(Context context, String permission) {
+    private static String getThirdAuthorityFromPermission(Context context, String permission) {
         if (TextUtils.isEmpty(permission)) {
             return "";
         }
@@ -111,7 +141,7 @@ public class ShortcutHelper {
         return "";
     }
 
-    public static String getAuthorityFromPermission(Context context) {
+    private static String getAuthorityFromPermission(Context context) {
         // 获取默认
         String authority = getAuthorityFromPermissionDefault(context);
         // 获取特殊第三方

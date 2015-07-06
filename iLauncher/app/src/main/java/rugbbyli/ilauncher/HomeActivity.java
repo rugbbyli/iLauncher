@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements GestureListener.IGestureListener {
 
     private GestureDetector m_gestureDetector;
 
@@ -21,13 +21,15 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
         new AppHelper(this);
 
-        m_gestureDetector = new GestureDetector(this, new GestureListener());
+        m_gestureDetector = new GestureDetector(this, new GestureListener(this));
         findViewById(R.id.shortcutList_Home).setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return m_gestureDetector.onTouchEvent(motionEvent);
             }
         });
+
+        ShortcutHelper.getAllShortcuts();
     }
 
 
@@ -60,10 +62,26 @@ public class HomeActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    public void showApps(View v){
+    public void onAppListButtonClick(View v){
 
+        openApplistActivity();
+    }
+
+    private void openApplistActivity(){
         Intent i = new Intent(this, AppListActivity.class);
-
         startActivity(i);
+        overridePendingTransition(R.anim.zoomin, 0);
+    }
+
+    @Override
+    public void GestureEvent(GestureListener.GestureType type) {
+        switch (type){
+            case FlipDown:
+                DeviceHelper.openNotificationBar(true);
+                break;
+            case FlipUp:
+                openApplistActivity();
+                break;
+        }
     }
 }

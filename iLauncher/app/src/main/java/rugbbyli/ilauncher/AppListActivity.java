@@ -263,6 +263,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
+        overridePendingTransition(0, R.anim.zoomout);
     }
 
     @Override

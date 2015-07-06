@@ -8,6 +8,27 @@ import android.view.View;
  * Created by zxq on 2015/7/6.
  */
 public class GestureListener implements GestureDetector.OnGestureListener {
+
+    public enum GestureType{
+        FlipDown,
+        FlipUp,
+    }
+
+    public interface IGestureListener{
+        void GestureEvent(GestureType type);
+    }
+
+    private IGestureListener m_listener;
+    public GestureListener(IGestureListener listener){
+        m_listener = listener;
+    }
+
+    private void GestureEvent(GestureType type){
+        if(m_listener !=null){
+            m_listener.GestureEvent(type);
+        }
+    }
+
     @Override
     public boolean onDown(MotionEvent motionEvent) {
         return false;
@@ -40,13 +61,12 @@ public class GestureListener implements GestureDetector.OnGestureListener {
         int FLING_MIN_VELOCITY = 5;
         if (e1.getY() - e2.getY() > FLING_MIN_DISTANCE
                 && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
-            //flip up
-            DeviceHelper.openNotificationBar(false);
+            GestureEvent(GestureType.FlipUp);
         } else
         if (e2.getY() - e1.getY() > FLING_MIN_DISTANCE
                 && Math.abs(velocityY) > FLING_MIN_VELOCITY) {
             //flip down
-            DeviceHelper.openNotificationBar(true);
+            GestureEvent(GestureType.FlipDown);
         }
 
         return false;
