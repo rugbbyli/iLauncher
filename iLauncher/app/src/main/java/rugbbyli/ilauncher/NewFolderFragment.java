@@ -68,13 +68,13 @@ public class NewFolderFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_new_folder, container, false);
         EditText text = (EditText)view.findViewById(R.id.editText_name);
-        text.requestFocusFromTouch();
-        text.selectAll();
+        text.requestFocus();
         return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
+
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }

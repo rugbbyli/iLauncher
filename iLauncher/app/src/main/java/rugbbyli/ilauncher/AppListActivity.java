@@ -113,7 +113,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
             public void onItemClick(AdapterView<?> av, View v, int pos, long id) {
                 AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
-                switch (appGridViewState){
+                switch (appGridViewState) {
                     case Normal:
                     case OpenFolder:
                         if (item.type == AppListItemType.App) {
@@ -125,21 +125,19 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
                             startActivity(((AppItem) item).intent);
 
-                        } else if(item.type == AppListItemType.Folder) {
+                        } else if (item.type == AppListItemType.Folder) {
 
                             m_adapter.toggleFolder(pos);
                             m_adapter.notifyDataSetChanged();
-                        }
-                        else if(item.type == AppListItemType.AddFolder){
+                        } else if (item.type == AppListItemType.AddFolder) {
                             showNewFolderPop();
                         }
                         break;
                     case CreatingFolder:
-                        if(item.type == AppListItemType.App) {
-                            Log.w("item is checked:", Boolean.toString(appGridView.isItemChecked(pos)));
+                        if (item.type == AppListItemType.App) {
+                            Log.w("item is checked:", item.name + "," + pos + "," + Boolean.toString(appGridView.isItemChecked(pos)));
                             m_adapter.notifyDataSetChanged();
-                        }
-                        else{
+                        } else {
                             appGridView.setItemChecked(pos, false);
                         }
                         break;
@@ -195,6 +193,8 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         appGridView.clearChoices();
 
         appGridViewState = AppListState.CreatingFolder;
+
+        Log.w("fuck newFolderPop:", "selected count:" + appGridView.getCheckedItemCount());
     }
 
     private void hideNewFolderPop(){
@@ -207,6 +207,8 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         appGridView.setChoiceMode(AbsListView.CHOICE_MODE_NONE);
         appGridView.clearChoices();
         appGridViewState = AppListState.Normal;
+
+        newFolderFragment.getView().clearFocus();
     }
 
     public void newFolderPop_buttonCancel_Click(View v){
@@ -236,8 +238,12 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
             int pos = positions.keyAt(i);
             AppListItem item = AppHelper.getCurrent().getInstallApps().get(pos);
 
+            Log.w("selected items:", item.name + "," + pos );
             folder.getItems().add(item);
-            AppHelper.getCurrent().getInstallApps().remove(pos);
+        }
+
+        for(int i = 0;i<positions.size();i++){
+            AppHelper.getCurrent().getInstallApps().remove(positions.keyAt(i));
         }
 
         folder.refreshIcon();

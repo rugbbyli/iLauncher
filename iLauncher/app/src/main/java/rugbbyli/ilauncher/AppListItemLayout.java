@@ -23,7 +23,7 @@ public class AppListItemLayout extends RelativeLayout implements Checkable {
         if(m_isChecked != checked){
             m_isChecked = checked;
             refreshDrawableState();
-            Log.w("item state:" ,"" + checked);
+            //Log.w("item state:" ,"" + checked);
         }
     }
 

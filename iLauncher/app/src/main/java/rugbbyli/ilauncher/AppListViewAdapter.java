@@ -121,7 +121,7 @@ public class AppListViewAdapter extends BaseAdapter {
                 convertView.setLayoutParams(parms);
             }
 
-            m_openedFolderGridView = (GridView)convertView.findViewById(R.id.folder_AppList);
+            m_openedFolderGridView = (GridView)convertView;
 
             initFolderAppList(m_openedFolderGridView);
         }
