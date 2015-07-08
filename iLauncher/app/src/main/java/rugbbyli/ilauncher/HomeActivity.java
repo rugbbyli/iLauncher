@@ -68,7 +68,7 @@ public class HomeActivity extends Activity implements GestureListener.IGestureLi
     }
 
     private void openApplistActivity(){
-        Intent i = new Intent(this, AppListActivity.class);
+        Intent i = new Intent(this, RecyclerAppListActivity.class);
         startActivity(i);
         overridePendingTransition(R.anim.zoomin, 0);
     }

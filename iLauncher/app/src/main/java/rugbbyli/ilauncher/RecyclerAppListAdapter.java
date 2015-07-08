@@ -61,6 +61,7 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             StaggeredGridLayoutManager.LayoutParams parms = new StaggeredGridLayoutManager.LayoutParams(0, 0);
             parms.setFullSpan(true);
             parms.setMargins(10,0,10,15);
+
 //            //parms.width = m_context.getResources().getDisplayMetrics().widthPixels;
 //            parms.height = m_context.getResources().getDisplayMetrics().heightPixels / 2;
             itemView.setLayoutParams(parms);
@@ -147,9 +148,11 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
             initFolderAppList(folderHolder.apps, m_openedFolder);
 
-            StaggeredGridLayoutManager.LayoutParams parms = (StaggeredGridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
-            parms.height = AppHelper.getCurrent().dip2px(100*((m_openedFolder.getItems().size() - 1) / 4 + 1));
-            Log.w("open folder:", m_openedFolder.name + "," + holder.itemView.getLayoutParams().height);
+            int minHeight = AppHelper.getCurrent().dip2px(100 * ((m_openedFolder.getItems().size() - 1) / 4 + 1));
+            holder.itemView.setMinimumHeight(minHeight);
+
+            Log.w("open folder:", "min height:" + minHeight);
+
         }else if(item.type != AppListItemType.FolderApp && holder instanceof  AppViewHolder){
 
             AppViewHolder appHolder = (AppViewHolder)holder;
