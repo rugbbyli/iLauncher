@@ -12,7 +12,6 @@
         android:choiceMode="none"
         android:verticalSpacing="15dip"
         android:horizontalSpacing="6dp"
-        android:layout_centerHorizontal="true"
         android:stretchMode="columnWidth"
         android:scrollbars="none"
         android:columnWidth="80dip"

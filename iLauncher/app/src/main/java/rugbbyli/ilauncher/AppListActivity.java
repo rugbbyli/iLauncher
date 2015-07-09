@@ -28,7 +28,7 @@ import android.widget.Toast;
 import rugbbyli.ilauncher.sql.AppListDAO;
 
 
-public class AppListActivity extends Activity implements NewFolderFragment.OnFragmentInteractionListener {
+public class AppListActivity extends Activity {
 
     public static boolean hasCreated = false;
     private AppListState appGridViewState;
@@ -185,7 +185,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         getFragmentManager().beginTransaction().add(R.id.applist_layout, newFolderFragment).commit();
 
         FrameLayout.LayoutParams parms = (FrameLayout.LayoutParams)appGridView.getLayoutParams();
-        parms.setMargins(0, AppHelper.getCurrent().dip2px(60), 0, 0);
+        parms.setMargins(0, AppHelper.getCurrent().dip2px(R.dimen.new_folder_fragment_height), 0, 0);
         appGridView.setLayoutParams(parms);
 
         appGridView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
@@ -217,7 +217,7 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
 
     public void newFolderPop_buttonOk_Click(View v){
 
-        EditText text = (EditText)findViewById(R.id.editText_name);
+        EditText text = (EditText)findViewById(R.id.frag_new_folder_edit_name);
         String name = text.getText().toString().trim();
 
         if(name.isEmpty()){
@@ -268,10 +268,5 @@ public class AppListActivity extends Activity implements NewFolderFragment.OnFra
         Intent i = new Intent(this, HomeActivity.class);
         startActivity(i);
         overridePendingTransition(0, R.anim.zoomout);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }

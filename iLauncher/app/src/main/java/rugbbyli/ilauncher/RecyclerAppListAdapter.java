@@ -19,6 +19,10 @@ import java.util.List;
  */
 public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    interface ItemClickListener{
+        void OnClick(View view, AppListItem item, int position);
+    }
+
     class AppViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         ImageView icon;
@@ -37,15 +41,7 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         @Override
         public void onClick(View view) {
             AppListItem item = m_items.get(position);
-            if (item.type == AppListItemType.App) {
-
-                m_context.startActivity(((AppItem) item).intent);
-
-            } else if(item.type == AppListItemType.Folder) {
-
-                toggleFolder(position);
-                notifyDataSetChanged();
-            }
+            onItemClick(itemView, item, position);
         }
     }
 
@@ -58,12 +54,10 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
             apps = (GridView)itemView.findViewById(R.id.folder_AppList);
 
-            StaggeredGridLayoutManager.LayoutParams parms = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            StaggeredGridLayoutManager.LayoutParams parms = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             parms.setFullSpan(true);
-            parms.setMargins(10,0,10,15);
+            parms.setMargins(10,0,10,10);
 
-//            //parms.width = m_context.getResources().getDisplayMetrics().widthPixels;
-//            parms.height = m_context.getResources().getDisplayMetrics().heightPixels / 2;
             itemView.setLayoutParams(parms);
         }
     }
@@ -72,6 +66,8 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private Activity m_context;
     private RecyclerView m_appListView;
 
+    private ItemClickListener itemClickListener;
+
     private FolderItem m_openedFolder = null;
     private int m_openFolderPosition = -1;
 
@@ -79,6 +75,16 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         this.m_items = AppHelper.getCurrent().getInstallApps();
         m_context = context;
         m_appListView = view;
+    }
+
+    public void setOnItemClickListener(ItemClickListener listener){
+        itemClickListener = listener;
+    }
+
+    private void onItemClick(View view, AppListItem item, int position){
+        if(itemClickListener != null){
+            itemClickListener.OnClick(view, item, position);
+        }
     }
 
     public void openFolder(int position){
@@ -203,9 +209,8 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AppListItem app = (AppListItem)view.getTag();
-                if (app != null && app.type == AppListItemType.App) {
-                    m_context.startActivity(((AppItem) app).intent);
-                }
+
+                RecyclerAppListAdapter.this.onItemClick(view, app, position);
             }
         });
     }

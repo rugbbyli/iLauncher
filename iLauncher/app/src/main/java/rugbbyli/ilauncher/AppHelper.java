@@ -92,11 +92,11 @@ public class AppHelper {
 
         Collections.sort(installApps);
 
-        AppListItem add = new AppListItem("新建文件夹", context.getResources().getDrawable(R.drawable.add), AppListItemType.AddFolder);
+        //AppListItem add = new AppListItem("新建文件夹", context.getResources().getDrawable(R.drawable.add), AppListItemType.AddFolder);
 
         //add.icon.setColorFilter(Color.parseColor("#ffffff"), PorterDuff.Mode.ADD);
 
-        installApps.add(add);
+        //installApps.add(add);
 
         //在列表顶部排序并插入文件夹
         Collections.sort(folderItems);

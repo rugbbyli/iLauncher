@@ -3,4 +3,7 @@
     tools:context="rugbbyli.ilauncher.RecyclerAppListActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" android:showAsAction="never" />
+    <item android:id="@+id/recycler_menu_add_folder" android:title="添加文件夹"
+        android:icon="@drawable/add" android:showAsAction="never"/>
+
 </menu>
