@@ -56,9 +56,9 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         public FolderAppViewHolder(View itemView) {
             super(itemView);
 
-            apps = (GridView)itemView;
+            apps = (GridView)itemView.findViewById(R.id.folder_AppList);
 
-            StaggeredGridLayoutManager.LayoutParams parms = new StaggeredGridLayoutManager.LayoutParams(0, 0);
+            StaggeredGridLayoutManager.LayoutParams parms = new StaggeredGridLayoutManager.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             parms.setFullSpan(true);
             parms.setMargins(10,0,10,15);
 
@@ -92,37 +92,39 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         m_openedFolder.setIsOpen(true);
         m_openFolderPosition = position;
 
-        int index = (m_openFolderPosition / 4 + 1) * 4;
-        AppListItem folderApp = new AppListItem(null, null, AppListItemType.FolderApp);
-        m_items.add(index, folderApp);
+        if(m_openedFolder.getItems().size() > 0) {
+            int index = (m_openFolderPosition / 4 + 1) * 4;
+            AppListItem folderApp = new AppListItem(null, null, AppListItemType.FolderApp);
+            m_items.add(index, folderApp);
+            notifyItemInserted(index);
+        }
     }
 
     public void closeFolder(){
         if(m_openedFolder != null){
             m_openedFolder.setIsOpen(false);
 
-
             int index = (m_openFolderPosition / 4 + 1) * 4;
-            m_items.remove(index);
-
             m_openFolderPosition = -1;
             m_openedFolder = null;
 
-
+            if(m_items.get(index).type == AppListItemType.FolderApp) {
+                m_items.remove(index);
+                notifyItemRemoved(index);
+            }
         }
     }
 
     public void toggleFolder(int position){
 
-
-
         if(m_openFolderPosition == position){
             closeFolder();
+
         }
         else {
             openFolder(position);
         }
-        notifyDataSetChanged();
+
     }
 
     @Override
@@ -142,7 +144,8 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         AppListItem item = m_items.get(position);
 
-        if(item.type == AppListItemType.FolderApp && holder instanceof FolderAppViewHolder){
+        if(item.type == AppListItemType.FolderApp && holder instanceof FolderAppViewHolder && m_openedFolder.getItems().size() > 0){
+            Log.w("open folder:", m_openedFolder.name.toString());
 
             FolderAppViewHolder folderHolder = (FolderAppViewHolder)holder;
 
@@ -151,7 +154,6 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             int minHeight = AppHelper.getCurrent().dip2px(100 * ((m_openedFolder.getItems().size() - 1) / 4 + 1));
             holder.itemView.setMinimumHeight(minHeight);
 
-            Log.w("open folder:", "min height:" + minHeight);
 
         }else if(item.type != AppListItemType.FolderApp && holder instanceof  AppViewHolder){
 

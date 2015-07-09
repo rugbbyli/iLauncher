@@ -2,6 +2,7 @@ package rugbbyli.ilauncher;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -27,6 +28,8 @@ public class RecyclerAppListActivity extends Activity {
 
         appListAdapter = new RecyclerAppListAdapter(this, appListView);
         appListView.setAdapter(appListAdapter);
+
+        appListView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override

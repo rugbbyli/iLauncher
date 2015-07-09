@@ -219,9 +219,9 @@ public class AppHelper {
 
     public Drawable getFolderIcon(boolean isOpen, List<AppListItem> children){
 
-        int width = 100;
+        int width = 300;
 
-        NinePatchDrawable bg = (NinePatchDrawable)context.getResources().getDrawable(isOpen ? R.drawable.folder_open : R.drawable.folder_close);
+        NinePatchDrawable bg = (NinePatchDrawable)context.getResources().getDrawable(isOpen ? R.drawable.folder_background : R.drawable.folder_close);
         //bg.setBounds(0, 0, bg.getIntrinsicWidth(), bg.getIntrinsicHeight());
         //设置当bg绘制在canvas里面时绘制的大小和区域
         bg.setBounds(0, 0, width, width);

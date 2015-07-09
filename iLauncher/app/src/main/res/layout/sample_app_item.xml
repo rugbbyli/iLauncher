@@ -8,27 +8,29 @@
     android:textAlignment="center"
     android:gravity="top"
     android:layout_gravity="top"
+    android:background="@drawable/app_list_selector"
+
+
     android:padding="0dp">
     <ImageView android:id="@+id/icon"
         android:layout_width="50dip"
         android:src="@drawable/home"
         android:layout_height="50dip"
-        android:layout_marginTop="1dip"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
         android:scaleType="fitCenter">
     </ImageView>
     <TextView android:id="@+id/app_label"
         android:layout_below="@+id/icon"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_marginBottom="5dp"
         android:layout_centerHorizontal="true"
         android:text="demodemo"
         android:gravity="center_horizontal"
         android:lines="2"
-
         android:maxWidth="80dip"
         android:textAlignment="inherit"
-        android:layout_marginBottom="1dip"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         android:nestedScrollingEnabled="false"
