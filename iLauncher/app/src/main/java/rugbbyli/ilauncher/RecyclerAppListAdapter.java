@@ -97,10 +97,11 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         m_openedFolder = item;
         m_openedFolder.setIsOpen(true);
         m_openFolderPosition = position;
+        notifyItemChanged(position);
 
         if(m_openedFolder.getItems().size() > 0) {
             int index = (m_openFolderPosition / 4 + 1) * 4;
-            AppListItem folderApp = new AppListItem(null, null, AppListItemType.FolderApp);
+            AppListItem folderApp = new AppListItem(m_openedFolder.name, null, AppListItemType.FolderAppList);
             m_items.add(index, folderApp);
             notifyItemInserted(index);
         }
@@ -109,12 +110,13 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void closeFolder(){
         if(m_openedFolder != null){
             m_openedFolder.setIsOpen(false);
+            notifyItemChanged(m_openFolderPosition);
 
             int index = (m_openFolderPosition / 4 + 1) * 4;
             m_openFolderPosition = -1;
             m_openedFolder = null;
 
-            if(m_items.get(index).type == AppListItemType.FolderApp) {
+            if(m_items.get(index).type == AppListItemType.FolderAppList) {
                 m_items.remove(index);
                 notifyItemRemoved(index);
             }
@@ -130,13 +132,12 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         else {
             openFolder(position);
         }
-
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder vh = null;
-        if(viewType == AppListItemType.FolderApp.ordinal()){
+        if(viewType == AppListItemType.FolderAppList.ordinal()){
             vh = new FolderAppViewHolder(m_context.getLayoutInflater().inflate(R.layout.list_folder_apps, null));
         }
         else {
@@ -150,7 +151,7 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         AppListItem item = m_items.get(position);
 
-        if(item.type == AppListItemType.FolderApp && holder instanceof FolderAppViewHolder && m_openedFolder.getItems().size() > 0){
+        if(item.type == AppListItemType.FolderAppList && holder instanceof FolderAppViewHolder && m_openedFolder.getItems().size() > 0){
             Log.w("open folder:", m_openedFolder.name.toString());
 
             FolderAppViewHolder folderHolder = (FolderAppViewHolder)holder;
@@ -161,7 +162,7 @@ public class RecyclerAppListAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             holder.itemView.setMinimumHeight(minHeight);
 
 
-        }else if(item.type != AppListItemType.FolderApp && holder instanceof  AppViewHolder){
+        }else if(item.type != AppListItemType.FolderAppList && holder instanceof  AppViewHolder){
 
             AppViewHolder appHolder = (AppViewHolder)holder;
 

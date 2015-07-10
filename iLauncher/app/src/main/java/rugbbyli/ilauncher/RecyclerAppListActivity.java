@@ -24,7 +24,7 @@ import android.widget.Toast;
 import rugbbyli.ilauncher.R;
 import rugbbyli.ilauncher.sql.AppListDAO;
 
-public class RecyclerAppListActivity extends Activity implements RecyclerAppListAdapter.ItemClickListener {
+public class RecyclerAppListActivity extends Activity implements RecyclerAppListAdapter.ItemClickListener, AppEventReceiver.AppEventListener {
 
     RecyclerView appListView;
     RecyclerAppListAdapter appListAdapter;
@@ -62,6 +62,8 @@ public class RecyclerAppListActivity extends Activity implements RecyclerAppList
         checkedAppList = new CheckedItemList();
 
         appListState = AppListState.Normal;
+
+        AppEventReceiver.getCurrent().setEventListener(this);
     }
 
     @Override
@@ -149,6 +151,10 @@ public class RecyclerAppListActivity extends Activity implements RecyclerAppList
             return;
         }
 
+        //get selected apps and make them into folder.
+
+        appListAdapter.closeFolder();
+
         FolderItem folder = new FolderItem(name, null);
 
         for(AppListItem item : checkedAppList.getAllChecked()){
@@ -163,9 +169,9 @@ public class RecyclerAppListActivity extends Activity implements RecyclerAppList
 
         AppListDAO.AddFolder(folder);
 
-        AppHelper.getCurrent().getInstallApps().add(0, folder);
+        AppHelper.getCurrent().insertApp(folder);
 
-        appListAdapter.notifyItemInserted(0);
+        appListAdapter.notifyDataSetChanged();
 
         hideNewFolderPop();
     }
@@ -211,5 +217,15 @@ public class RecyclerAppListActivity extends Activity implements RecyclerAppList
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void install(String packageName) {
+
+    }
+
+    @Override
+    public void uninstall(String packageName) {
+
     }
 }

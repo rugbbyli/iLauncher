@@ -28,4 +28,8 @@ public class AppItem extends AppListItem {
         this.intent.setComponent(componentName);
         this.intent.setFlags(flag);
     }
+
+    public void setStartIntent(Intent intent){
+        this.intent = intent;
+    }
 }

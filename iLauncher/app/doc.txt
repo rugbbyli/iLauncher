@@ -18,7 +18,7 @@ Folders/FolderApps---》数据库对应的内存副本 （记录了文件夹和�
 1，打开app，刷新InstalledApps和Folders/FolderApps和AppGridView；
 2，当对列表进行操作（如创建删除文件夹、移动App）时，
 	1，更新数据库，并同步更新Folders/FolderApps；
-	2，更新InstalledApps（当前是完整更新，能不能做到局部更新，只更新变化的部分？）；
+	2，更新InstalledApps；
 	3，刷新AppGridView；
 
 更新InstalledApps：
@@ -26,4 +26,6 @@ Folders/FolderApps---》数据库对应的内存副本 （记录了文件夹和�
 2，当app列表发生变化（比如卸载安装了app），如何更新？
 
 
-fuckfuckfuck!!!!!      Selector状态相当混乱，完全无法搞定。。
+待解决：
+1，文件夹增删app的操作方法；
+2，文件夹添加删除的方法；

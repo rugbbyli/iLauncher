@@ -34,6 +34,10 @@ public class FolderItem extends AppListItem {
         return items;
     }
 
+    public void add(AppListItem item){
+        items.add(item);
+    }
+
     public void refreshIcon(){
         icon = AppHelper.getCurrent().getFolderIcon(isOpen, items);
     }

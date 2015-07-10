@@ -10,7 +10,7 @@
         android:background="@drawable/folder_background"
         android:numColumns="4"
         android:choiceMode="none"
-        android:verticalSpacing="15dip"
+        android:verticalSpacing="2dip"
         android:horizontalSpacing="6dp"
         android:stretchMode="columnWidth"
         android:scrollbars="none"

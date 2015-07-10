@@ -2,10 +2,8 @@ package rugbbyli.ilauncher;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
@@ -16,8 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import java.util.List;
@@ -52,7 +48,7 @@ public class AppListViewAdapter extends BaseAdapter {
         m_openFolderPosition = position;
 
         int index = (m_openFolderPosition / m_gridView.getNumColumns() + 1) * m_gridView.getNumColumns();
-        AppListItem folderApp = new AppListItem(null, null, AppListItemType.FolderApp);
+        AppListItem folderApp = new AppListItem(null, null, AppListItemType.FolderAppList);
         m_items.add(index, folderApp);
     }
 
@@ -112,7 +108,7 @@ public class AppListViewAdapter extends BaseAdapter {
             TextView appName = (TextView)convertView.findViewById(R.id.app_label);
             appName.setText(item.name);
         }
-        else if(item.type == AppListItemType.FolderApp){
+        else if(item.type == AppListItemType.FolderAppList){
             if(convertView == null){
                 convertView = m_context.getLayoutInflater().inflate(R.layout.list_folder_apps, null);
                 FrameLayout.LayoutParams parms = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -175,13 +171,13 @@ public class AppListViewAdapter extends BaseAdapter {
 //        }
 //        else{
 //            if(position == (m_openFolderPosition / m_gridView.getNumColumns() + 1)*m_gridView.getNumColumns()){
-//                return AppListItemType.FolderApp.ordinal();
+//                return AppListItemType.FolderAppList.ordinal();
 //            }
 //            else{
 //                return AppListItemType.App.ordinal();
 //            }
 //        }
-        if(m_items.get(position).type == AppListItemType.FolderApp){
+        if(m_items.get(position).type == AppListItemType.FolderAppList){
             return 1;
         }
         else {

@@ -3,6 +3,7 @@ package rugbbyli.ilauncher;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -41,23 +42,24 @@ import rugbbyli.ilauncher.sql.AppListDAO;
 public class AppHelper {
     private Context context;
     private PackageManager manager;
-    private List<AppListItem> installApps;
+    private InstalledAppList installApps;
 
     private void getAppList(){
-        installApps = new ArrayList<>();
 
+        List<AppListItem> list = new ArrayList<>();
+
+        //get installed apps
         Intent intent = new Intent(Intent.ACTION_MAIN, null);
-
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
         List<ResolveInfo> availableActivities = manager.queryIntentActivities(intent, 0);
 
+        //get launcher apps
         List<String> launchers = getLauncherApp();
+
+        //get folder apps
         HashMap<String, String> folderApps = AppListDAO.GetAllFolderApps();
         List<String> folders = AppListDAO.GetAllFolders();
-
         List<FolderItem> folderItems = new ArrayList<>(folders.size());
-
         for(int i = 0;i<folders.size();i++){
             folderItems.add(new FolderItem(folders.get(i), null));
         }
@@ -86,11 +88,11 @@ public class AppHelper {
                 }
             }
             else{
-                installApps.add(app);
+                list.add(app);
             }
         }
 
-        Collections.sort(installApps);
+        //Collections.sort(installApps);
 
         //AppListItem add = new AppListItem("新建文件夹", context.getResources().getDrawable(R.drawable.add), AppListItemType.AddFolder);
 
@@ -99,11 +101,13 @@ public class AppHelper {
         //installApps.add(add);
 
         //在列表顶部排序并插入文件夹
-        Collections.sort(folderItems);
+        //Collections.sort(folderItems);
         for(int i = 0;i<folderItems.size();i++){
             folderItems.get(i).refreshIcon();
-            installApps.add(i, folderItems.get(i));
+            list.add(i, folderItems.get(i));
         }
+
+        installApps = new InstalledAppList(list);
     }
 
     private List<String> getLauncherApp(){
@@ -128,60 +132,20 @@ public class AppHelper {
     }
 
     public List<AppListItem> getInstallApps(){
-        return installApps;
+        return installApps.all();
     }
 
-    public List<AppListItem> updateInstallApps(){
-        getAppList();
-        return installApps;
+    public int insertApp(String packageName){
+        Intent intent = getStartupIntent(packageName);
+        ActivityInfo info = intent.resolveActivityInfo(manager, 0);
+        AppItem appItem = new AppItem(packageName, info.loadLabel(manager), info.loadIcon(manager));
+        appItem.setStartIntent(intent);
+
+        return insertApp(appItem);
     }
 
-    public Drawable getFolderIcon2(boolean isOpen, List<AppListItem> children){
-        int count = children.size();
-        if(count > 9) count = 9;
-
-        int width = dip2px(400);
-        int height = dip2px(400);
-        int cols = (int)Math.ceil(Math.sqrt(count));
-        int margin = 0;
-        int size = (width / cols) - 2*margin;
-
-        if(children.size() == 4)
-            Log.w("icon message:", String.format("%d, %d, %d, %d, %d", width, count, cols, margin, size));
-
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-
-        Drawable bg = context.getDrawable(isOpen ? R.drawable.folder_open : R.drawable.folder_close);
-        bg.setBounds(0,0,width,height);
-        bg.draw(canvas);
-
-        for(int i = 0;i<count;i++){
-            Drawable icon = children.get(i).icon;
-
-            int c = i%cols;
-            int r = i/cols;
-
-            int left = c*(size + margin*2) + margin;
-            int right = width - left - size;
-            int top = r*(size + margin*2) + margin;
-            int bottom = height - top - size;
-
-            icon.setBounds(left, top, size, size);
-            icon.draw(canvas);
-
-            if(children.size() == 4) Log.w("icon position:", String.format("name: %s, left:%d, top:%d, right:%d, bottom:%d", children.get(i).name, left, top, right, bottom));
-
-        }
-
-        canvas.save(Canvas.ALL_SAVE_FLAG);
-
-        saveMyBitmap(bitmap, "fuck");
-
-        BitmapDrawable bitmapDrawable = new BitmapDrawable(context.getResources(), bitmap);
-        bitmapDrawable.setBounds(0, 0, width, height);
-
-        return bitmapDrawable;
+    public int insertApp(AppListItem item){
+        return installApps.insert(item);
     }
 
     private void saveMyBitmap(Bitmap bmp, String bitName) {
@@ -275,6 +239,23 @@ public class AppHelper {
     public int dip2px(float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    public Intent getStartupIntent(String pkgName){
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.setPackage(pkgName);
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        ComponentName comopnentName = intent.resolveActivity(manager);//mPackageManager为PackageManager实例
+
+        //String cls = manager.getLaunchIntentForPackage(pkgName).resolveActivity(manager).getClassName();
+
+        //ComponentName comopnentName = new ComponentName(pkgName, cls);
+
+        intent.setComponent(comopnentName);
+        intent.setFlags(270532608);
+
+        return intent;
     }
 
     private static AppHelper _current;
